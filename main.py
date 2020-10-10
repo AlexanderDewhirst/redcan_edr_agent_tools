@@ -14,8 +14,8 @@ from utils.logger import Logger
 
 
 # python3 ./main.py file_manager -a "create" -l "log.txt" -f "output.txt"
-# python3 ./main.py file_manager -a "write" -l "log.txt" -f "output.txt" -d "My initial data."
-# python3 ./main.py file_manager -a "update" -l "log.txt" -f "output.txt" -d "updated data." -rd "initial data."
+# python3 ./main.py file_manager -a "send" -l "log.txt" -f "output.txt" -d "My initial data."
+# python3 ./main.py file_manager -a "replace" -l "log.txt" -f "output.txt" -d "updated data." -rd "initial data." -r 1 -c 1
 # python3 ./main.py file_manager -a "delete" -l "log.txt" -f "output.txt"
 # python3 ./main.py network_manager -a "connect" -l "log.txt" -h "localhost" -p "4000"
 # python3 ./main.py network_manager -a "send" -l "log.txt" -h "localhost" -p "4000" -d "Send my data."

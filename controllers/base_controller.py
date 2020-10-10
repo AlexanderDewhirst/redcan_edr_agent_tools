@@ -44,15 +44,15 @@ class FileController:
         file_util = FileUtil(args['file'])
         print(action)
         print(args)
-        if action == 'new':
-            response, log = file_util.create_file()
+        if action == 'create':
+            response, log = file_util.create()
             print(response)
-        elif action == 'create':
-            response, log = file_util.write_data(args['data'])
-        elif action == 'update':
-            response, log = file_util.replace_data(args['data'], args['replace_data'], args['row'], args['column'])
+        elif action == 'send':
+            response, log = file_util.send(args['data'])
+        elif action == 'replace':
+            response, log = file_util.replace(args['data'], args['replace_data'], args['row'], args['column'])
         elif action == 'delete':
-            response, log = file_util.delete_file()
+            response, log = file_util.delete()
         else:
             raise BaseException(
                 "Unexpected action: '{}' does not map to controller"

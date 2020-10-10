@@ -17,8 +17,8 @@ class FileUtil(object):
         except:
             return False, log
 
-    def write_data(self, data:str) -> (bool, str):
-        log = self._write_log(data)
+    def send(self, data:str) -> (bool, str):
+        log = self._send_log(data)
         try:
             with open(self.filename, 'w') as file:
                 file.write(
@@ -28,7 +28,7 @@ class FileUtil(object):
         except:
             return False, log
 
-    def replace_data(self, data:str, replace_data:str, row:int, column:int) -> (bool, str):
+    def replace(self, data:str, replace_data:str, row:int, column:int) -> (bool, str):
         log = self._replace_log(data, replace_data, row, column)
         try:
             with open(self.filename, 'w') as file:
@@ -42,7 +42,7 @@ class FileUtil(object):
         except:
             return False, log
 
-    def delete_file(self) -> (bool, str):
+    def delete(self) -> (bool, str):
         log = self._delete_log()
         try:
             os.remove(self.filename)
@@ -56,8 +56,8 @@ class FileUtil(object):
         )
         return logger_msg
 
-    def _write_log(self, data:str) -> str:
-        logger_msg = "Pushing {} to {}".format(
+    def _send_log(self, data:str) -> str:
+        logger_msg = "Sending {} to {}".format(
             data,
             self.filename
         )

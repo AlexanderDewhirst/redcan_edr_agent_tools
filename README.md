@@ -41,5 +41,6 @@ To connect to a host and port, for example:
 python3 ./main.py network_manager -a "connect" -l "log.txt" --host 'localhost' --port 4000
 ```
 
+### Architecture
 The BaseController extends functionality to the NetworkController or FileController based on the subparser argument. This in turn, maps the action argument to a FileUtil or NetworkUtil method, executing the logic and obtaining a response. We then pass this response to the Logger.
 
