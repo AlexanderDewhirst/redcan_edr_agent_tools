@@ -5,10 +5,11 @@ import os
 
 class FileUtil(object):
 
-    def __init__(self, filename:str):
-        self.filename = filename
+    def __init__(self, filename:str, **kwargs):
+        self.filename  = filename
+        self.args      = kwargs 
 
-    def create_file(self) -> (bool, str):
+    def create(self) -> (bool, str):
         log = self._create_log()
         try:
             with open(self.filename, 'w') as file:
@@ -17,30 +18,43 @@ class FileUtil(object):
         except:
             return False, log
 
-    def send(self, data:str) -> (bool, str):
-        log = self._send_log(data)
+    def send(self) -> (bool, str):
+        log = self._send_log()
         try:
-            with open(self.filename, 'w') as file:
+            with open(self.filename, 'a') as file:
                 file.write(
-                    "{}\n".format(data)
+                    "{}\n".format(self.args['data'])
                 )
             return True, log
         except:
             return False, log
 
-    def replace(self, data:str, replace_data:str, row:int, column:int) -> (bool, str):
-        log = self._replace_log(data, replace_data, row, column)
+    def replace(self):
+        if self.args['replace_cell']:
+            log = self._replace_csv_log()
+            response = self._replace_csv()
+        else:
+            log = self._replace_txt_log()
+            response = self._replace_txt()
+        return response, log
+
+    def _replace_csv(self) -> (bool, str):
         try:
             with open(self.filename, 'w') as file:
-                # if kwargs['row'] and kwargs['column']:
                 content = file.readlines()
-                content[row - 1][column - 1].replace(replace_data, data)
-                # else:
-                #     content = file.read()
-                #     content.replace(replace_data, data)
-            return True, log
+                content[self.args['row'] - 1][self.args['column'] - 1].replace(self.args['replace_data'], self.args['data'])
+            return True
         except:
-            return False, log
+            return False
+
+    def _replace_txt(self) -> (bool, str):
+        try:
+            with open(self.filename, 'w') as file:
+                content = file.read()
+                content.replace(self.args['replace_data'], self.args['data'])
+            return True
+        except:
+            return False
 
     def delete(self) -> (bool, str):
         log = self._delete_log()
@@ -56,28 +70,29 @@ class FileUtil(object):
         )
         return logger_msg
 
-    def _send_log(self, data:str) -> str:
+    def _send_log(self) -> str:
         logger_msg = "Sending {} to {}".format(
-            data,
+            self.args['data'],
             self.filename
         )
         return logger_msg
 
-    def _replace_log(self, data:str, replace_data:str, row:int, column:int) -> str:
-        # if row and column:
+    def _replace_csv_log(self) -> str:
         logger_msg = "Replacing {} to {} at ({}, {}) in {}".format(
-            replace_data,
-            data,
-            row,
-            column,
+            self.args['replace_data'],
+            self.args['data'],
+            self.args['row'],
+            self.args['column'],
             self.filename
         )
-        # else:
-        #     logger_msg = "Replacing {} to {} in {}".format(
-        #         replace_data,
-        #         data,
-        #         self.filename
-        #     )
+        return logger_msg
+
+    def _replace_txt_log(self) -> str:
+        logger_msg = "Replacing {} to {} in {}".format(
+            self.args['replace_data'],
+            self.args['data'],
+            self.filename
+        )
         return logger_msg
 
     def _delete_log(self) -> str:

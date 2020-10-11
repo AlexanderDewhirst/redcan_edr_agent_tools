@@ -4,24 +4,24 @@ import socket
 
 class NetworkUtil(object):
 
-    def __init__(self, host: str, port: int, sock: object = None):
+    def __init__(self, host: str, port: int, **kwargs):
         self.host = host
         self.port = port
-        self.sock = sock
+        self.args = kwargs
         self.__init_sock()
 
     def connect(self) -> (bool, str):
         log = self._connect_log()
         try:
-            self.sock.connect((self.host, self.port))
+            self.args['sock'].connect((self.host, self.port))
             return True, log
         except:
             return False, log
 
-    def send(self, data: str) -> (bool, str):
-        log = self._send_log(data)
+    def send(self) -> (bool, str):
+        log = self._send_log()
         try:
-            self.sock.send(data.encode())
+            self.args['sock'].send(self.args['data'].encode())
             return True, log
         except:
             return False, log
@@ -29,7 +29,7 @@ class NetworkUtil(object):
     def close(self) -> (bool, str):
         log = self._close_log()
         try:
-            self.sock.close()
+            self.args['sock'].close()
             return True, log
         except:
             return False, log
@@ -41,9 +41,9 @@ class NetworkUtil(object):
         )
         return logger_msg
 
-    def _send_log(self, data:str) -> str:
+    def _send_log(self) -> str:
         logger_msg = "Sending '{}' to socket at host '{}' and port '{}'".format(
-            data,
+            self.args['data'],
             self.host,
             self.port
         )
@@ -58,7 +58,7 @@ class NetworkUtil(object):
 
         
     def __init_sock(self):
-        if self.sock == None:
-            self.sock = socket.socket(
+        if self.args['sock'] == None:
+            self.args['sock'] = socket.socket(
                 socket.AF_INET, socket.SOCK_STREAM
             )

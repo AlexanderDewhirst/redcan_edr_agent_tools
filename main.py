@@ -28,8 +28,7 @@ args = parser()
 
 # Controller
 controller = BaseController(args)
-print(controller.response)
-Logger(controller.response[1], controller.response[0]).create_log()
+Logger(controller.response[1], controller.response[0], args.log_file).create_log()
 
 
 

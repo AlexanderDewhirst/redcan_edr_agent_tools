@@ -1,12 +1,7 @@
 #!/usr/bin/env python
 
-import sys
-import os
-
-sys.path.append(os.path.join(os.path.dirname(__file__), '/', 'controllers'))
-
-from utils.file_util import FileUtil
-from utils.network_util import NetworkUtil
+from .file_controller import FileController
+from .network_controller import NetworkController
 
 class BaseController(object):
 
@@ -37,46 +32,3 @@ class BaseController(object):
         for key, value in vars(namespace_args).items():
             args[key] = value
         return args
-
-class FileController:
-
-    def map_action(self, action, args):
-        file_util = FileUtil(args['file'])
-        print(action)
-        print(args)
-        if action == 'create':
-            response, log = file_util.create()
-            print(response)
-        elif action == 'send':
-            response, log = file_util.send(args['data'])
-        elif action == 'replace':
-            response, log = file_util.replace(args['data'], args['replace_data'], args['row'], args['column'])
-        elif action == 'delete':
-            response, log = file_util.delete()
-        else:
-            raise BaseException(
-                "Unexpected action: '{}' does not map to controller"
-                .format(
-                    action
-                )
-            )
-        return response, log
-
-class NetworkController:
-
-    def map_action(self, action, args):
-        network_util = NetworkUtil(args.host, args.port)
-        if action == 'connect':
-            response, log = network_util.connect()
-        elif action == 'send':
-            response, log = network_util.send(args.data)
-        elif action == 'close':
-            response, log = network_util.close()
-        else:
-            raise BaseException(
-                "Unexpected action: '{}' does not map to controller"
-                .format(
-                    action
-                )
-            )
-        return response, log
