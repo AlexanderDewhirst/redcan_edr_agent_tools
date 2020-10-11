@@ -4,7 +4,9 @@ import argparse
 
 from parsers.parser import Parser
 from controllers.base_controller import BaseController
-from utils.logger import Logger
+from loggers.network_logger import NetworkLogger
+from loggers.file_logger import FileLogger
+from loggers.request_logger import RequestLogger
 
 
 # python3 ./main.py file_manager -a "create" -l "log.txt" -f "output.txt"
@@ -18,11 +20,18 @@ from utils.logger import Logger
 
 # Parser
 parser = Parser()
-args = parser()
+request = parser()
+
+# RequestLogger()
+RequestLogger(request['status'], request['args'])()
 
 # Controller
-controller = BaseController(args)
-Logger(controller.response[1], controller.response[0], args.log_file).create_log()
+controller = BaseController(request["args"])
+print(controller)
+if controller.controller == 'FileController':
+    FileLogger(controller.response, controller.status, request['args'])()
+elif response[1] == 'NetworkController':
+    NetworkLogger(controller.response, controller.status, request['args'])()
 
 
 

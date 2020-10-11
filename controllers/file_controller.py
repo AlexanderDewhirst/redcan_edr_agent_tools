@@ -7,7 +7,7 @@ class FileController:
     def map_action(self, action, args):
         file_util = FileUtil(args['file'], **args)
         try:
-            response, log = getattr(file_util, action)()
+            log, response = getattr(file_util, action)()
         except:
             raise BaseException(
                 "Unexpected action: '{}' does not map to controller"
@@ -15,4 +15,7 @@ class FileController:
                     action
                 )
             )
-        return response, log
+        return self.__class__.__name__, log, response
+
+    def __call__(self):
+        super().__call__()

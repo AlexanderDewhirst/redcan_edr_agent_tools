@@ -7,10 +7,14 @@ class Parser(object):
     def __init__(self, description = None):
         self.description = description
         self.parser = self._init_parser()
+        self.status = True
 
     def __call__(self):
         parsed_args = self.parser.parse_args()
-        return parsed_args
+        return {
+            "status": self.status,
+            "args": parsed_args
+        }
 
     def _init_parser(self):
         parser = argparse.ArgumentParser()

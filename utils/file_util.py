@@ -14,9 +14,9 @@ class FileUtil(object):
         try:
             with open(self.filename, 'w') as file:
                 pass
-            return True, log
+            return log, True
         except:
-            return False, log
+            return log, False
 
     def send(self) -> (bool, str):
         log = self._send_log()
@@ -25,9 +25,9 @@ class FileUtil(object):
                 file.write(
                     "{}\n".format(self.args['data'])
                 )
-            return True, log
+            return log, True
         except:
-            return False, log
+            return log, False
 
     def replace(self):
         if self.args['replace_cell']:
@@ -36,7 +36,7 @@ class FileUtil(object):
         else:
             log = self._replace_txt_log()
             response = self._replace_txt()
-        return response, log
+        return log, response
 
     def _replace_csv(self) -> (bool, str):
         try:
@@ -60,9 +60,9 @@ class FileUtil(object):
         log = self._delete_log()
         try:
             os.remove(self.filename)
-            return True, log
+            return log, True
         except:
-            return False, log
+            return log, False
 
     def _create_log(self) -> str:
         logger_msg = "Creating file {}".format(

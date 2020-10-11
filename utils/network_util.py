@@ -14,25 +14,25 @@ class NetworkUtil(object):
         log = self._connect_log()
         try:
             self.args['sock'].connect((self.host, self.port))
-            return True, log
+            return log, True
         except:
-            return False, log
+            return log, False
 
     def send(self) -> (bool, str):
         log = self._send_log()
         try:
             self.args['sock'].send(self.args['data'].encode())
-            return True, log
+            return log, True
         except:
-            return False, log
+            return log, False
 
     def close(self) -> (bool, str):
         log = self._close_log()
         try:
             self.args['sock'].close()
-            return True, log
+            return log, True
         except:
-            return False, log
+            return log, False
 
     def _connect_log(self) -> str:
         logger_msg = "Establishing connection to host '{}' and port '{}'".format(
