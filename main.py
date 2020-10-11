@@ -27,10 +27,9 @@ RequestLogger(request['status'], request['args'])()
 
 # Controller
 controller = BaseController(request["args"])
-print(controller)
 if controller.controller == 'FileController':
     FileLogger(controller.response, controller.status, request['args'])()
-elif response[1] == 'NetworkController':
+elif controller.controller == 'NetworkController':
     NetworkLogger(controller.response, controller.status, request['args'])()
 
 
