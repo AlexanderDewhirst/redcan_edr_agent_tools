@@ -1,12 +1,6 @@
 #!/usr/bin/env python
 
 import argparse
-import sys
-import os
-
-sys.path.append(os.path.join(os.path.dirname(__file__), '/', 'utils'))
-sys.path.append(os.path.join(os.path.dirname(__file__), '/', 'parsers'))
-sys.path.append(os.path.join(os.path.dirname(__file__), '/', 'controllers'))
 
 from parsers.parser import Parser
 from controllers.base_controller import BaseController
