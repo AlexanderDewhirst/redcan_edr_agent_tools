@@ -10,13 +10,16 @@ class Parser(object):
         self.status = True
 
     def __call__(self):
-        parsed_args = self.parser.parse_args()
-        return {
-            "status": self.status,
-            "args": parsed_args
-        }
+        self.parsed_args = self.parser.parse_args()
+        return self
 
     def _init_parser(self):
+        """
+        This function is called in the __init__ method and will create the parser
+        and subparsers to store the command for us to access
+        Output:
+            - Namespace (argparse object)
+        """
         parser = argparse.ArgumentParser()
         subparsers = parser.add_subparsers(dest = 'command')
         file_parser = subparsers.add_parser('file_manager')

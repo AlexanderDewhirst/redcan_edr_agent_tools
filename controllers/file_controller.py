@@ -5,6 +5,16 @@ from utils.file_util import FileUtil
 class FileController:
 
     def map_action(self, action, args):
+        """
+        This funciton maps the action to the corresponding method in FileUtil.
+        Input:
+            - action: str
+            - args: dict
+        Output:
+            - str
+            - str
+            - bool
+        """
         file_util = FileUtil(args['file'], **args)
         try:
             log, response = getattr(file_util, action)()

@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 
-import argparse
-
 from parsers.parser import Parser
 from controllers.base_controller import BaseController
 from loggers.network_logger import NetworkLogger
@@ -23,14 +21,14 @@ parser = Parser()
 request = parser()
 
 # RequestLogger()
-RequestLogger(request['status'], request['args'])()
+RequestLogger(request.status, request.parsed_args)()
 
 # Controller
-controller = BaseController(request["args"])
+controller = BaseController(request.parsed_args)
 if controller.controller == 'FileController':
-    FileLogger(controller.response, controller.status, request['args'])()
+    FileLogger(controller.response, controller.status, request.parsed_args)()
 elif controller.controller == 'NetworkController':
-    NetworkLogger(controller.response, controller.status, request['args'])()
+    NetworkLogger(controller.response, controller.status, request.parsed_args)()
 
 
 

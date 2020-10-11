@@ -27,13 +27,29 @@ class BaseController(object):
     def __call__(self):
         return self
 
-    def is_network_manager(self):
+    def is_network_manager(self) -> bool:
+        """
+        This function checks if the subparser command was 'network_manager'
+        Output:
+            - bool
+        """
         return self.command == "network_manager"
 
     def is_file_manager(self):
+        """
+        This function checks if the subparser command was 'file_manager'
+        Output:
+            - bool
+        """
         return self.command == "file_manager"
 
     def __map_args(self, namespace_args):
+        """
+        This function maps Namespace to a dict.
+        ## TODO: exclude 'action' and 'command'
+        Output:
+            - dict
+        """
         args = {}
         for key, value in vars(namespace_args).items():
             args[key] = value

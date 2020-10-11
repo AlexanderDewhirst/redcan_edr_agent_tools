@@ -1,17 +1,22 @@
 #!/usr/bin/env python
 
-from .logger import Logger
+from .base_logger import BaseLogger
 
-class RequestLogger(Logger):
+class RequestLogger(BaseLogger):
 
     def __init__(self, response:bool, namespace_args:object):
-        Logger.__init__(self, response, namespace_args.log_file)
+        BaseLogger.__init__(self, response, namespace_args.log_file)
         self.message = self.format_message()
 
     def __call__(self):
         super().__call__()
 
     def format_message(self) -> str:
+        """
+        This function formats the log message.
+        Output:
+            - str
+        """
         message = "{} - {} {}:{} [{}] - {}: {}\n".format(
             self.user_name,
             self.timestamp,

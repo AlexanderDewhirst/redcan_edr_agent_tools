@@ -1,24 +1,21 @@
 #!/usr/bin/env python
 
-from .logger import Logger
+from .base_logger import BaseLogger
 
-class FileLogger(Logger):
+class FileLogger(BaseLogger):
 
     def __init__(self, message:str, response:bool, namespace_args:object):
-        Logger.__init__(self, response, namespace_args.log_file)
+        BaseLogger.__init__(self, response, namespace_args.log_file)
         self.message = self.format_message(message)
 
     def __call__(self):
-        """
-        This function prints a formatted log message with stderr or stoud
-        depending on message type.
-        """
         super().__call__()
 
     def format_message(self, message:str) -> str:
         """
-        This function overwrites the message to format message type
-        for user.
+        This function formats the log message.
+        Output:
+            - str
         """
         message = "{} - {} {}:{} [{}] - {}: {} ({})\n".format(
             self.user_name,

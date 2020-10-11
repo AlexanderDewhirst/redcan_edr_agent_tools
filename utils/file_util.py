@@ -9,7 +9,13 @@ class FileUtil(object):
         self.filename  = filename
         self.args      = kwargs 
 
-    def create(self) -> (bool, str):
+    def create(self) -> (str, bool):
+        """
+        This function creates a file.
+        Output:
+            - str
+            - bool
+        """
         log = self._create_log()
         try:
             with open(self.filename, 'w') as file:
@@ -18,7 +24,13 @@ class FileUtil(object):
         except:
             return log, False
 
-    def send(self) -> (bool, str):
+    def send(self) -> (str, bool):
+        """
+        This function sends data to a file.
+        Output:
+            - str
+            - bool
+        """
         log = self._send_log()
         try:
             with open(self.filename, 'a') as file:
@@ -29,7 +41,13 @@ class FileUtil(object):
         except:
             return log, False
 
-    def replace(self):
+    def replace(self) -> (str, bool):
+        """
+        This function determines how to replace data.
+        Output:
+            - str
+            - bool
+        """
         if self.args['replace_cell']:
             log = self._replace_csv_log()
             response = self._replace_csv()
@@ -38,7 +56,12 @@ class FileUtil(object):
             response = self._replace_txt()
         return log, response
 
-    def _replace_csv(self) -> (bool, str):
+    def _replace_csv(self) -> bool:
+        """
+        This function replaces data in a csv using the 'row' and 'column' arguments provided.
+        Output:
+            - bool
+        """
         try:
             with open(self.filename, 'w') as file:
                 content = file.readlines()
@@ -47,7 +70,12 @@ class FileUtil(object):
         except:
             return False
 
-    def _replace_txt(self) -> (bool, str):
+    def _replace_txt(self) -> bool:
+        """
+        This function replaces data in a txt file.
+        Output:
+            - bool
+        """
         try:
             with open(self.filename, 'w') as file:
                 content = file.read()
@@ -56,7 +84,13 @@ class FileUtil(object):
         except:
             return False
 
-    def delete(self) -> (bool, str):
+    def delete(self) -> (str, bool):
+        """
+        This function deletes the file.
+        Output:
+            - str
+            - bool
+        """
         log = self._delete_log()
         try:
             os.remove(self.filename)
@@ -65,12 +99,22 @@ class FileUtil(object):
             return log, False
 
     def _create_log(self) -> str:
+        """
+        This function formats a message when creating a file.
+        Output:
+            - str
+        """
         logger_msg = "Creating file {}".format(
             self.filename
         )
         return logger_msg
 
     def _send_log(self) -> str:
+        """
+        This function formats a message when sending data to a file.
+        Output:
+            - str
+        """
         logger_msg = "Sending {} to {}".format(
             self.args['data'],
             self.filename
@@ -78,6 +122,11 @@ class FileUtil(object):
         return logger_msg
 
     def _replace_csv_log(self) -> str:
+        """
+        This function formats a message when replacing data in a csv.
+        Output:
+            - str
+        """
         logger_msg = "Replacing {} to {} at ({}, {}) in {}".format(
             self.args['replace_data'],
             self.args['data'],
@@ -88,6 +137,11 @@ class FileUtil(object):
         return logger_msg
 
     def _replace_txt_log(self) -> str:
+        """
+        This function formats a message when replacing data in a txt file.
+        Output:
+            - str
+        """
         logger_msg = "Replacing {} to {} in {}".format(
             self.args['replace_data'],
             self.args['data'],
@@ -96,6 +150,11 @@ class FileUtil(object):
         return logger_msg
 
     def _delete_log(self) -> str:
+        """
+        This function formats a message when deleting a file.
+        Output:
+            - str
+        """
         logger_msg = "Deleting {}".format(
             self.filename
         )

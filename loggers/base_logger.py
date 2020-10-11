@@ -6,7 +6,7 @@ import pwd
 import psutil
 import datetime
 
-class Logger(object):
+class BaseLogger(object):
 
     def __init__(self, response:bool, output_file = None):
             self.output_file        = output_file
@@ -20,10 +20,6 @@ class Logger(object):
             self.status             = self.__set_status(response)
 
     def __call__(self):
-        """
-        This function prints a formatted log message with stderr or stoud
-        depending on message type.
-        """
         if not hasattr(self, 'message'):
             raise BaseException(
                 "Logger attribute 'message' not present."
@@ -45,12 +41,18 @@ class Logger(object):
             )
 
     def __dump_message(self):
+        """
+        This function writes the message using stderr or stdout depending on status.
+        """
         if self.status == 'error':
             sys.stderr.write(self.message)
         elif self.status == 'info':
             sys.stdout.write(self.message)
 
     def __send_to_file(self):
+        """
+        This function sends the data to the output file.
+        """
         if self.output_file:
             with open(self.output_file, 'a') as log_file:
                 log_file.write(self.message)
@@ -58,17 +60,37 @@ class Logger(object):
             sys.stdout.write("No log filename specified.")
 
     def __set_timestamp(self):
+        """
+        This function gets the current time.
+        Output:
+            - str
+        """
         time = datetime.datetime.now()
         time = time.isoformat('|')
         return time
 
     def __get_abs_file_path(self):
+        """
+        This function gets the absolute path of the output file.
+        Output:
+            - str
+        """
         return os.path.abspath(self.output_file)
 
     def __get_username(self):
+        """
+        This function gets the username of the current user.
+        Output:
+            - str
+        """
         return pwd.getpwuid(os.getuid())[0]
     
     def __get_process(self):
+        """
+        This function gets the Process details (id, name, start_time).
+        Output:
+            - dict
+        """
         pid = os.getpid()
         process = {
             "pid": pid,
@@ -78,4 +100,9 @@ class Logger(object):
         return process
 
     def __get_command(self):
+        """
+        This function gets the input command using the 'sys' library.
+        Output:
+            - str
+        """
         return ' '.join(sys.argv)
