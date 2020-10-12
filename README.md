@@ -1,6 +1,39 @@
 # RedCan EDR Agent tools
 
-This repository contains a CLI to handle file management and network management using the 'argparse' Python library.
+This repository contains a CLI to handle file management and network management using the 'argparse' Python library. The goal of this application is to create a framework that allows us to generate endpoint activity across at least two of three supported platforms (Windows, macOS, Linux). This program will allow us to test an EDR agent and ensure it generates the appropriate telemetry.
+
+The program should trigger the following activity:
+● Start a process, given a path to an executable file and the desired (optional) command-line arguments
+● Create a file of a specified type at a specified location
+● Modify a file
+● Delete a file
+● Establish a network connection and transmit data
+
+This log should be in a machine friendly format (e.g. CSV, TSV, JSON, YAML, etc). Each data type should contain the following information:
+● Process start
+    ○ Timestamp of start time
+    ○ Username that started the process
+    ○ Process name
+    ○ Process command line
+    ○ Process ID
+● File creation, modification, deletion
+    ○ Timestamp of activity
+    ○ Full path to the file
+    ○ Activity descriptor - e.g. create, modified, delete
+    ○ Username that started the process that created/modified/deleted the file
+    ○ Process name that created/modified/deleted the file
+    ○ Process command line
+    ○ Process ID
+● Network connection and data transmission
+    ○ Timestamp of activity
+    ○ Username that started the process that initiated the network activity
+    ○ Destination address and port
+    ○ Source address and port
+    ○ Amount of data sent
+    ○ Protocol of data sent
+    ○ Process name
+    ○ Process command line
+    ○ Process ID
 
 
 ## Architecture
@@ -67,3 +100,28 @@ The general format of the Logger message is the following:
 - response message (from controller)
 - logger specific details (absolute file path or host/port)
 
+## Testing Operating Systems
+This application has been developed in a macOS environment and since Docker does not have the ability to containerize macOS, setting up a test environment within another operating system proves difficult. The Dockerfile in the application builds a an image using the official Ubuntu version 18.04 image in Docker Hub. After installing Docker, you can run the following commands to get the Linux test environment running:
+```
+docker build --tag redcan_edr_agent_tools:1.0 .
+```
+This may take a few minutes. Afterwards, you can run the image with:
+```
+docker run --entrypoint /bin/bash -i -t redcan_edr_agent_tools:1.0 
+```
+This will open bash and allow you to test the application. The commands can be found in the Script Commands section. You can open the output file or log file with:
+```
+cat <filename>
+```
+
+## Script Commands
+Example commands are as follows:
+```
+python3 ./main.py file_manager -a "create" -l "log.txt" -f "output.txt"
+python3 ./main.py file_manager -a "send" -l "log.txt" -f "output.txt" -d "My initial data."
+python3 ./main.py file_manager -a "replace" -l "log.txt" -f "output.txt" -d "updated data." -rd "initial data." -r 1 -c 1
+python3 ./main.py file_manager -a "delete" -l "log.txt" -f "output.txt"
+python3 ./main.py network_manager -a "connect" -l "log.txt" -h "localhost" -p "4000"
+python3 ./main.py network_manager -a "send" -l "log.txt" -h "localhost" -p "4000" -d "Send my data."
+python3 ./main.py network_manager -a "close" -l "log.txt"
+```
