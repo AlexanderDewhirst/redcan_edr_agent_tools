@@ -19,7 +19,7 @@ class NetworkUtil(object):
         """
         log = self._connect_log()
         try:
-            self.args['sock'].connect((self.host, self.port))
+            self._establish_connection()
             return log, True
         except:
             return log, False
@@ -33,7 +33,8 @@ class NetworkUtil(object):
         """
         log = self._send_log()
         try:
-            self.args['sock'].send(self.args['data'].encode())
+            self._establish_connection()
+            self.args['sock'].sendall(self.args['data'].encode())
             return log, True
         except:
             return log, False
@@ -47,6 +48,7 @@ class NetworkUtil(object):
         """
         log = self._close_log()
         try:
+            self._establish_connection()
             self.args['sock'].close()
             return log, True
         except:
@@ -89,7 +91,9 @@ class NetworkUtil(object):
         )
         return logger_msg
 
-        
+    def _establish_connection(self):
+        self.args['sock'].connect((self.host, self.port))
+
     def __init_sock(self):
         """
         This function creates an open socket if none is present.

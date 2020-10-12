@@ -114,14 +114,30 @@ This will open bash and allow you to test the application. The commands can be f
 cat <filename>
 ```
 
+Further testing of the network manager - To bind and listen to a socket locally, you can run:
+```
+python3 listener.py
+```
+in an open bash and run the script commands in another.
+NOTE: Currently establishing a connection in every command to the network manager.
+
+To connect to a running docker container, to test using listener.py, you can run:
+```
+docker exec -it <docker container id> bash
+```
+and you can find the container id with:
+```
+docker ps
+```
+
 ## Script Commands
 Example commands are as follows:
 ```
-python3 ./main.py file_manager -a "create" -l "log.txt" -f "output.txt"
-python3 ./main.py file_manager -a "send" -l "log.txt" -f "output.txt" -d "My initial data."
-python3 ./main.py file_manager -a "replace" -l "log.txt" -f "output.txt" -d "updated data." -rd "initial data." -r 1 -c 1
-python3 ./main.py file_manager -a "delete" -l "log.txt" -f "output.txt"
-python3 ./main.py network_manager -a "connect" -l "log.txt" -h "localhost" -p "4000"
-python3 ./main.py network_manager -a "send" -l "log.txt" -h "localhost" -p "4000" -d "Send my data."
-python3 ./main.py network_manager -a "close" -l "log.txt"
+python3 ./main.py file_manager -a create -l log.txt -f output.txt
+python3 ./main.py file_manager -a send -l log.txt -f output.txt -d "My initial data."
+python3 ./main.py file_manager -a replace -l log.txt -f output.txt -d "updated data." -rd "initial data." -r 1 -c 1
+python3 ./main.py file_manager -a delete -l log.txt -f output.txt
+python3 ./main.py network_manager -a connect -l log.txt --host localhost --port 4000
+python3 ./main.py network_manager -a send -l log.txt --host localhost --port 4000 -d "Send my data."
+python3 ./main.py network_manager -a close -l log.txt
 ```
