@@ -9,13 +9,14 @@ class FileController:
         This funciton maps the action to the corresponding method in FileUtil.
         Input:
             - action: str
-            - args: dict
+            - args: Namespace
         Output:
             - str
             - str
             - bool
         """
-        file_util = FileUtil(args['file'], **args)
+        rest_args = self.__map_args(args)
+        file_util = FileUtil(args.file, **rest_args)
         try:
             log, response = getattr(file_util, action)()
         except:
@@ -29,3 +30,17 @@ class FileController:
 
     def __call__(self):
         super().__call__()
+
+    def __map_args(self, namespace_args):
+        """
+        This function maps Namespace to a dict.
+        ## TODO: exclude 'action' and 'command'
+        Output:
+            - dict
+        """
+        args = {}
+        exclude = ['file']
+        for key, value in vars(namespace_args).items():
+            if key not in exclude:
+                args[key] = value
+        return args

@@ -19,8 +19,3 @@ if controller.controller == 'FileController':
     FileLogger(controller.response, controller.status, request.parsed_args)()
 elif controller.controller == 'NetworkController':
     NetworkLogger(controller.response, controller.status, request.parsed_args)()
-
-
-
-
-

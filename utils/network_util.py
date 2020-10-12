@@ -94,7 +94,7 @@ class NetworkUtil(object):
         """
         This function creates an open socket if none is present.
         """
-        if self.args['sock'] == None:
+        if 'sock' not in self.args:
             self.args['sock'] = socket.socket(
                 socket.AF_INET, socket.SOCK_STREAM
             )
