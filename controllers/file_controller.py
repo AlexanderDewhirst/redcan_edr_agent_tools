@@ -2,11 +2,24 @@
 
 from utils.file_util import FileUtil
 
-class FileController:
+class FileController(object):
 
-    def map_action(self, action, args):
+    def __init__(self, namespace_args):
+        self.action     = namespace_args.action
+        self.file       = namespace_args.file
+        self.args       = self._map_args(namespace_args)
+        self.response   = None
+        self.status     = None
+
+    def __call__(self):
+        response, status = self.map_action()
+        self.response = response
+        self.status = status
+        return self
+
+    def map_action(self) -> (str, bool):
         """
-        This funciton maps the action to the corresponding method in FileUtil.
+        This function maps the action to the corresponding method in FileUtil.
         Input:
             - action: str
             - args: Namespace
@@ -15,31 +28,28 @@ class FileController:
             - str
             - bool
         """
-        rest_args = self.__map_args(args)
-        file_util = FileUtil(args.file, **rest_args)
+        file_util = FileUtil(self.file, **self.args)
         try:
-            log, response = getattr(file_util, action)()
+            log, response = getattr(file_util, self.action)()
         except:
             raise BaseException(
                 "Unexpected action: '{}' does not map to controller"
                 .format(
-                    action
+                    self.action
                 )
             )
-        return self.__class__.__name__, log, response
+        return log, response
 
-    def __call__(self):
-        super().__call__()
-
-    def __map_args(self, namespace_args):
+    def _map_args(self, namespace_args):
         """
         This function maps Namespace to a dict.
-        ## TODO: exclude 'action' and 'command'
+        Input:
+            - Namespace
         Output:
             - dict
         """
         args = {}
-        exclude = ['file']
+        exclude = ['command', 'action', 'file']
         for key, value in vars(namespace_args).items():
             if key not in exclude:
                 args[key] = value

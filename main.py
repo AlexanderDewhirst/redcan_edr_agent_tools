@@ -9,13 +9,15 @@ from loggers.request_logger import RequestLogger
 # Parser
 parser = Parser()
 request = parser()
+# TODO: Check if connection to socket has already been established.
 
-# RequestLogger()
+# RequestLogger
 RequestLogger(request.status, request.parsed_args)()
 
 # Controller
-controller = BaseController(request.parsed_args)
-if controller.controller == 'FileController':
-    FileLogger(controller.response, controller.status, request.parsed_args)()
-elif controller.controller == 'NetworkController':
-    NetworkLogger(controller.response, controller.status, request.parsed_args)()
+base_controller = BaseController(request.parsed_args)
+controller = base_controller()
+if controller.subcontroller.__class__.__name__ == 'FileController':
+    FileLogger(controller.subcontroller.response, controller.subcontroller.status, request.parsed_args)()
+elif controller.subcontroller.__class__.__name__ == 'NetworkController':
+    NetworkLogger(controller.subcontroller.response, controller.subcontroller.status, request.parsed_args)()
