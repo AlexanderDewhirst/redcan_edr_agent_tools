@@ -131,13 +131,30 @@ docker ps
 ```
 
 ## Script Commands
-Example commands are as follows:
+Example file commands are as follows:
 ```
-python3 ./main.py file_manager -a create -l log.txt -f output.txt
-python3 ./main.py file_manager -a send -l log.txt -f output.txt -d "My initial data."
-python3 ./main.py file_manager -a replace -l log.txt -f output.txt -d "updated data." -rd "initial data." -r 1 -c 1
+python3 ./main.py file_manager -a create -l logfile.txt -f output.txt
+python3 ./main.py file_manager -a create -l logfile.txt -f output.csv
+
+python3 ./main.py file_manager -a send -l logfile.txt -f output.txt -d "My initial data."
+python3 ./main.py file_manager -a send -l logfile.txt -f output.csv -d "My first object."
+
+python3 ./main.py file_manager -a send -l logfile.txt -f output.txt -d "My second sentence on a new line." --new-line
+python3 ./main.py file_manager -a send -l logfile.txt -f output.csv -d "My second cell on the next row." --new-line
+
+python3 ./main.py file_manager -a replace -l logfile.txt -f output.txt -rd "initial data" -d "first sentence"
+python3 ./main.py file_manager -a replace -l logfile.txt -f output.csv -rd "object" -d "cell" --row 1 --column 1
+
 python3 ./main.py file_manager -a delete -l log.txt -f output.txt
-python3 ./main.py network_manager -a connect -l log.txt --host localhost --port 4000
-python3 ./main.py network_manager -a send -l log.txt --host localhost --port 4000 -d "Send my data."
-python3 ./main.py network_manager -a close -l log.txt
+python3 ./main.py file_manager -a delete -l logfile.txt -f output.csv
+```
+
+Example networks command are:
+```
+# Shell 1
+python3 listener.py
+# Shell 2
+python3 ./main.py network_manager -a connect -l logfile.txt --host localhost --port 4000
+python3 ./main.py network_manager -a send -l logfile.txt --host localhost --port 4000 -d "Send my data."
+python3 ./main.py network_manager -a close -l logfile.txt
 ```
