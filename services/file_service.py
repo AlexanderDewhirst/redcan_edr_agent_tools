@@ -3,6 +3,7 @@
 import sys
 import os
 from helpers.file_helper import FileHelper
+from helpers.service_helper import ServiceHelper
 
 class FileService(object):
 
@@ -24,7 +25,7 @@ class FileService(object):
         except:
             status = False
         finally:
-            return self._construct_response(status, data)
+            return ServiceHelper.construct_response(status, data)
 
     def send(self) -> dict:
         """
@@ -41,7 +42,7 @@ class FileService(object):
             file_ext,
             self.args['new_line']
         )
-        return self._construct_response(status, data)
+        return ServiceHelper.construct_response(status, data)
 
     def replace(self) -> dict:
         """
@@ -67,10 +68,10 @@ class FileService(object):
             status = FileHelper.replace_in_file(
                 self.filename,
                 self.args['data'],
-                self.args['replace_data'], 
+                self.args['replace_data'],
                 file_ext
             )
-        return self._construct_response(status)
+        return ServiceHelper.construct_response(status, data)
 
     def delete(self) -> dict:
         """
@@ -85,19 +86,4 @@ class FileService(object):
         except:
             status = False
         finally:
-            return self._construct_response(status, data)    
-
-    def _construct_response(self, status:bool, data:dict = None) -> dict:
-        """
-        This function constructs the data object for the Logger
-        Input:
-            - bool
-            - dict (opt.)
-        Output:
-            - dict
-        """
-        response = {
-            'status': status,
-            'data': data
-        }
-        return response
+            return ServiceHelper.construct_response(status, data)    

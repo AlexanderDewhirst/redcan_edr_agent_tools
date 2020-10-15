@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import socket
+from helpers.service_helper import ServiceHelper
 
 class NetworkService(object):
 
@@ -26,7 +27,7 @@ class NetworkService(object):
         except:
             status = False
         finally:
-            return self._construct_response(status, data)
+            return ServiceHelper.construct_response(status, data)
 
     def send(self) -> dict:
         """
@@ -47,7 +48,7 @@ class NetworkService(object):
         except:
             status = False
         finally:
-            return self._construct_response(status, data)
+            return ServiceHelper.construct_response(status, data)
 
     def close(self) -> dict:
         """
@@ -65,7 +66,7 @@ class NetworkService(object):
         except:
             status = False
         finally:
-            return self._construct_response(status, data)
+            return ServiceHelper.construct_response(status, data)
 
     
     def _establish_connection(self):
@@ -84,21 +85,6 @@ class NetworkService(object):
             )
         else:
             return self.args['sock']
-
-    def _construct_response(self, status:bool, data:dict = None) -> dict:
-        """
-        This function constructs the data object for the Logger
-        Input:
-            - bool
-            - dict (opt.)
-        Output:
-            - dict
-        """
-        response = {
-            'status': status,
-            'data': data
-        }
-        return response
 
     def __get_socket_source(self):
         """
