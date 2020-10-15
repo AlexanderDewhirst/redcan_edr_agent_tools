@@ -56,12 +56,13 @@ class FileLogger(BaseLogger):
         )
         return logger_msg
 
-    def _replace_log(self, file_ext:str) -> str:
+    def _replace_log(self) -> str:
         """
         This function formats a message when replacing data in a file.
         Output:
             - str
         """
+        file_ext = self.data['filename'].split('.')[1]
         if file_ext == 'csv':
             logger_msg = "Replacing {} to {} at ({}, {}) in {}".format(
                 self.data['replace_message'],

@@ -66,9 +66,9 @@ More examples can be found in the Script Commands section.
 
 #### Network Manager
 For network management, the CLI handles the following actions using the `-a` argument:
-- "connect"
-- "close"
-- "send"
+- connect
+- close
+- send
 
 The network manager CLI, a subparser (called `network_manager`) handles additional arguments:
 - `-l` (or `--log_filename`) to set the output log file,
@@ -94,7 +94,7 @@ NOTE: Expected to change.
 There are four Logger classes. The BaseLogger offers basic functionality and is encapsulated in the RequestLogger, FileLogger, and NetworkLogger. The RequestLogger, accepts arguments for `status` and `parsed_args` which formats a simple message stating whether the arguments could be processed. The FileLogger and NetworkLogger, called depending on the subparser, controller, and service requested, formats a log message with the requested arguments in the assessment outline.
 
 ### Helpers
-There is one Helper class. The FileHelper class decouples the action to write to a file from the FileService class to allow the Logger to utilize the same method to write to the `log_filename` argument. The FileHelper class also decouples the action to replace within a file.
+There are two Helper classes. The FileHelper class decouples the action to write to a file from the FileService class to allow the Logger to utilize the same method to write to the `log_filename` argument. The FileHelper class also decouples the action to replace within a file. The ServiceHelper helps to maintain a DRY development practice by allowing the utilization of constructing the service response object in both the NetworkService and FileService classes.
 
 The general format of the Logger message is the following:
 - username
@@ -109,9 +109,8 @@ The general format of the Logger message is the following:
 ## Testing Operating Systems
 This application has been developed in a macOS environment and since Docker does not have the ability to containerize macOS or Windows OS, setting up a test environment within another operating system proves difficult. The Dockerfile in the application builds an image using the official Ubuntu version 18.04 image in Docker Hub and since both macOS and Linux are built on Unix, I believe this suffices. After installing Docker, you can run the following commands to get the Linux test environment running:
 ```
-docker build --tag <container_name>:1.0 .
+docker build --tag redcan_edr_agent_tools:1.0 .
 ```
-I am using `redcan_edr_agent_tools` as my container name.
 
 This may take a few minutes. Afterwards, you can run the image with:
 ```
