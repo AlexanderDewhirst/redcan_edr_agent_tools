@@ -93,6 +93,9 @@ Services provide functionality to the application. This functionality performs s
 NOTE: Expected to change.
 There are four Logger classes. The BaseLogger offers basic functionality and is encapsulated in the RequestLogger, FileLogger, and NetworkLogger. The RequestLogger, accepts arguments for `status` and `parsed_args` which formats a simple message stating whether the arguments could be processed. The FileLogger and NetworkLogger, called depending on the subparser, controller, and service requested, formats a log message with the requested arguments in the assessment outline.
 
+### Helpers
+There is one Helper class. The FileHelper class decouples the action to write to a file from the FileService class to allow the Logger to utilize the same method to write to the `log_filename` argument. The FileHelper class also decouples the action to replace within a file.
+
 The general format of the Logger message is the following:
 - username
 - timestamp

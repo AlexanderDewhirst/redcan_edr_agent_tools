@@ -27,14 +27,14 @@ class FileHelper:
 
 
     @staticmethod
-    def replace_in_file(filename:str, data:str, replace_data:str, file_type:str, row:int = None, column:int = None, new_line:bool = False) -> bool:
+    def replace_in_file(filename:str, data:str, replace_data:str, file_type:str, row:int = None, column:int = None) -> bool:
         content = None
         if file_type == 'csv':
             try:
-                with open(filename, new_line = '') as file:
+                with open(filename, newline = '') as file:
                     content = list(csv.reader(file))
-                    content[row - 1][column - 1] = content[row - 1][column - 1].relace(replace_data, data)
-                
+                    content[row - 1][column - 1] = content[row - 1][column - 1].replace(replace_data, data)
+
                 with open(filename, 'w') as file:
                     writer = csv.writer(file)
                     writer.writerows(content)

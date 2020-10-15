@@ -35,7 +35,12 @@ class FileService(object):
         log = self._send_log()
         # NOTE: hotfix to handle extensions.
         file_ext = self.filename.split('.')[1]
-        response = FileHelper.send_to_file(self.filename, self.args['data'], file_ext, self.args['new_line'])
+        response = FileHelper.send_to_file(
+            self.filename,
+            self.args['data'],
+            file_ext,
+            self.args['new_line']
+        )
         return log, response
 
     def replace(self) -> (str, bool):
@@ -46,14 +51,22 @@ class FileService(object):
             - bool
         """
         file_ext = self.filename.split('.')[1]
-        response = FileHelper.replace_in_file(
-            self.filename, self.args['data'],
-            self.args['replace_data'], 
-            file_ext,
-            self.args['row'],
-            self.args['column'],
-            self.args['new_line']
-        )
+        if file_ext == 'csv':
+            response = FileHelper.replace_in_file(
+                self.filename,
+                self.args['data'],
+                self.args['replace_data'], 
+                file_ext,
+                self.args['row'],
+                self.args['column'],
+            )
+        elif file_ext == 'txt':
+            response = FileHelper.replace_in_file(
+                self.filename,
+                self.args['data'],
+                self.args['replace_data'], 
+                file_ext
+            )
         log = self._replace_log(file_ext)
         return log, response
 
