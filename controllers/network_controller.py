@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from utils.network_util import NetworkUtil
+from services.network_service import NetworkService
 
 class NetworkController(object):
 
@@ -20,7 +20,7 @@ class NetworkController(object):
 
     def map_action(self) -> (str, bool):
         """
-        This funciton maps the action to the corresponding method in NetworkUtil.
+        This funciton maps the action to the corresponding method in NetworkService.
         Input:
             - action: str
             - args: Namespace
@@ -29,9 +29,9 @@ class NetworkController(object):
             - str
             - bool
         """
-        network_util = NetworkUtil(self.host, self.port, **self.args)
+        network_service = NetworkService(self.host, self.port, **self.args)
         try:
-            log, response = getattr(network_util, self.action)()
+            log, response = getattr(network_service, self.action)()
         except:
             raise BaseException(
                 "Unexpected action: '{}' does not map to controller"

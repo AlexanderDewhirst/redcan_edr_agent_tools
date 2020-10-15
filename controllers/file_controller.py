@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from utils.file_util import FileUtil
+from services.file_service import FileService
 
 class FileController(object):
 
@@ -19,7 +19,7 @@ class FileController(object):
 
     def map_action(self) -> (str, bool):
         """
-        This function maps the action to the corresponding method in FileUtil.
+        This function maps the action to the corresponding method in FileService.
         Input:
             - action: str
             - args: Namespace
@@ -28,9 +28,9 @@ class FileController(object):
             - str
             - bool
         """
-        file_util = FileUtil(self.file, **self.args)
+        file_service = FileService(self.file, **self.args)
         try:
-            log, response = getattr(file_util, self.action)()
+            log, response = getattr(file_service, self.action)()
         except:
             raise BaseException(
                 "Unexpected action: '{}' does not map to controller"

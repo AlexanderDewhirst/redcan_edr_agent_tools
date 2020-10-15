@@ -1,6 +1,6 @@
 # RedCan EDR Agent tools
 
-This repository contains a CLI to handle file management and network management using the 'argparse' Python library. The goal of this application is to create a framework that allows us to generate endpoint activity across at least two of three supported platforms (Windows, macOS, Linux). This program will allow us to test an EDR agent and ensure it generates the appropriate telemetry.
+The goal of this application is to create a framework that allows us to generate endpoint activity across at least two of three supported platforms (Windows, macOS, Linux). This program will allow us to test an EDR agent and ensure it generates the appropriate telemetry.
 
 The program should trigger the following activity:
 - Start a process, given a path to an executable file and the desired (optional) command-line arguments
@@ -37,23 +37,17 @@ This log should be in a machine friendly format (e.g. CSV, TSV, JSON, YAML, etc)
 
 
 ## Architecture
-The BaseController extends functionality to the NetworkController or FileController based on the subparser argument. This in turn, maps the action argument to a FileUtil or NetworkUtil method, executing the logic and obtaining a response. We then pass this response to a Logger.
+This repository contains a CLI to handle file management and network management using the 'argparse' Python library. There are four class types: Parser, to act as a CLI and parse the arguments; Controller, to control the request processing; Service, to provide a way for the client to interact with some functionality in the application; and Logger, a simple framework for emitting log messages.
 
 ### Parser
-The Parser class uses the argparse library to parse command line arguments. Calling a parser instance will return a Parser object where the attribute `parsed_args` will contain the Namespace object returned from `argparse.parse_args()` method.
-
-### Controllers
-There are three controllers in this project. The BaseController can be initialized with the `parsed_args` attribute from the parser. The initializer will act as a factory, calling either the NetworkController or FileController and assigning the result of the actions to attributes.
-
-### Utilities
-The actions requested to create, modify, and delete a file are contained within the FileUtil class, which is accessed by the FileController. The actions requested to connect to a server, send data, and close a connection are contained within the NetworkUtil class, which is accessed by the NetworkController.
+The Parser class uses the argparse library to parse command line arguments. The parser contains two subparsers `file_manager` and `network_manager`, providing an interface to separate services in the application. Calling a parser instance will return a Parser object where the attribute `parsed_args` will contain the Namespace object returned from `argparse.parse_args()` method.
 
 #### File Manager
 For file management, the CLI handles the following actions using the `-a` argument:
-- "create"
-- "send"
-- "replace"
-- "delete"
+- create
+- send
+- replace
+- delete
 
 The file manager CLI, a subparser (called `file_manager`) handles additional arguments:
 - `-l` (or `--log_filename`) to set the output log file,
@@ -66,8 +60,9 @@ Currently, it is expected that the arguments are set correctly, for the Controll
 
 To create a file, for example:
 ```
-python3 ./main.py file_manager -a "create" -l "log.txt" -f "output.txt"
+python3 main.py file_manager -a create -l logfile.txt -f output.txt
 ```
+More examples can be found in the Script Commands section.
 
 #### Network Manager
 For network management, the CLI handles the following actions using the `-a` argument:
@@ -84,11 +79,19 @@ Again, it is expected that the arguments are set correctly.
 
 To connect to a host and port, for example:
 ```
-python3 ./main.py network_manager -a "connect" -l "log.txt" --host 'localhost' --port 4000
+python3 ./main.py network_manager -a connect -l logfile.txt --host localhost --port 4000
 ```
+More examples can be found in the Script Commands section.
+
+### Controllers
+There are three controllers in this project: BaseController, FileController, and NetworkController. The BaseController, initialized with the `parsed_args` attribute from the Parser, implements a factory design pattern, creating an instance of the NetworkController or FileController using a common interface. These "subcontroller", the FileController and NetworkController, then call a Service class.
+
+### Services
+Services provide functionality to the application. This functionality performs some action, provides a status, and response message. The actions requested in the assessment outline to create, modify, and delete a file are contained within the FileService class. The actions requested in the assessment outline to connect to a server, send data, and close a connection are contained within the NetworkService class.
 
 ### Loggers
-The response and status are then passed to a Logger subclass which will format a output log message sent to the `-l` or `--log_filename` argument in the command.
+NOTE: Expected to change.
+There are four Logger classes. The BaseLogger offers basic functionality and is encapsulated in the RequestLogger, FileLogger, and NetworkLogger. The RequestLogger, accepts arguments for `status` and `parsed_args` which formats a simple message stating whether the arguments could be processed. The FileLogger and NetworkLogger, called depending on the subparser, controller, and service requested, formats a log message with the requested arguments in the assessment outline.
 
 The general format of the Logger message is the following:
 - username
@@ -98,17 +101,20 @@ The general format of the Logger message is the following:
 - command
 - status
 - response message (from controller)
-- logger specific details (absolute file path or host/port)
+- logger specific details if necessary (absolute file path or host/port)
 
 ## Testing Operating Systems
-This application has been developed in a macOS environment and since Docker does not have the ability to containerize macOS, setting up a test environment within another operating system proves difficult. The Dockerfile in the application builds a an image using the official Ubuntu version 18.04 image in Docker Hub. After installing Docker, you can run the following commands to get the Linux test environment running:
+This application has been developed in a macOS environment and since Docker does not have the ability to containerize macOS or Windows OS, setting up a test environment within another operating system proves difficult. The Dockerfile in the application builds an image using the official Ubuntu version 18.04 image in Docker Hub and since both macOS and Linux are built on Unix, I believe this suffices. After installing Docker, you can run the following commands to get the Linux test environment running:
 ```
-docker build --tag redcan_edr_agent_tools:1.0 .
+docker build --tag <container_name>:1.0 .
 ```
+I am using `redcan_edr_agent_tools` as my container name.
+
 This may take a few minutes. Afterwards, you can run the image with:
 ```
-docker run --entrypoint /bin/bash -i -t redcan_edr_agent_tools:1.0 
+docker run --entrypoint /bin/bash -i -t <container_name>:1.0 
 ```
+
 This will open bash and allow you to test the application. The commands can be found in the Script Commands section. You can open the output file or log file with:
 ```
 cat <filename>
@@ -118,14 +124,15 @@ Further testing of the network manager - To bind and listen to a socket locally,
 ```
 python3 listener.py
 ```
-in an open bash and run the script commands in another.
+in an open bash and run the script commands in another. This script creates a server at '127.0.0.1:4000` (or localhost port 4000).
 NOTE: Currently establishing a connection in every command to the network manager.
 
 To connect to a running docker container, to test using listener.py, you can run:
 ```
-docker exec -it <docker container id> bash
+docker exec -it <container_id> bash
 ```
-and you can find the container id with:
+
+and you can find the container_id with:
 ```
 docker ps
 ```
@@ -133,20 +140,20 @@ docker ps
 ## Script Commands
 Example file commands are as follows:
 ```
-python3 ./main.py file_manager -a create -l logfile.txt -f output.txt
-python3 ./main.py file_manager -a create -l logfile.txt -f output.csv
+python3 main.py file_manager -a create -l logfile.txt -f output.txt
+python3 main.py file_manager -a create -l logfile.txt -f output.csv
 
-python3 ./main.py file_manager -a send -l logfile.txt -f output.txt -d "My initial data."
-python3 ./main.py file_manager -a send -l logfile.txt -f output.csv -d "My first object."
+python3 main.py file_manager -a send -l logfile.txt -f output.txt -d "My initial data."
+python3 main.py file_manager -a send -l logfile.txt -f output.csv -d "My first object."
 
-python3 ./main.py file_manager -a send -l logfile.txt -f output.txt -d "My second sentence on a new line." --new-line
-python3 ./main.py file_manager -a send -l logfile.txt -f output.csv -d "My second cell on the next row." --new-line
+python3 main.py file_manager -a send -l logfile.txt -f output.txt -d "My second sentence on a new line." --new-line
+python3 main.py file_manager -a send -l logfile.txt -f output.csv -d "My second cell on the next row." --new-line
 
-python3 ./main.py file_manager -a replace -l logfile.txt -f output.txt -rd "initial data" -d "first sentence"
-python3 ./main.py file_manager -a replace -l logfile.txt -f output.csv -rd "object" -d "cell" --row 1 --column 1
+python3 main.py file_manager -a replace -l logfile.txt -f output.txt -rd "initial data" -d "first sentence"
+python3 main.py file_manager -a replace -l logfile.txt -f output.csv -rd "object" -d "cell" --row 1 --column 1
 
-python3 ./main.py file_manager -a delete -l log.txt -f output.txt
-python3 ./main.py file_manager -a delete -l logfile.txt -f output.csv
+python3 main.py file_manager -a delete -l log.txt -f output.txt
+python3 main.py file_manager -a delete -l logfile.txt -f output.csv
 ```
 
 Example networks command are:
@@ -154,7 +161,7 @@ Example networks command are:
 # Shell 1
 python3 listener.py
 # Shell 2
-python3 ./main.py network_manager -a connect -l logfile.txt --host localhost --port 4000
-python3 ./main.py network_manager -a send -l logfile.txt --host localhost --port 4000 -d "Send my data."
-python3 ./main.py network_manager -a close -l logfile.txt
+python3 main.py network_manager -a connect -l logfile.txt --host localhost --port 4000
+python3 main.py network_manager -a send -l logfile.txt --host localhost --port 4000 -d "Send my data."
+python3 main.py network_manager -a close -l logfile.txt
 ```

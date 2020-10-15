@@ -43,13 +43,11 @@ class Parser(object):
 
     def validate_args(self):
         if self.parsed_args.command not in ['file_manager', 'network_manager']:
-
             self.parser.error("Command invalid. Must use file manager or network manager")
+
         elif self.parsed_args.command == 'file_manager':
-            
             if self.parsed_args.action == 'send' and not self.parsed_args.data:
                 self.parser.error("Must specify data to send.")
-
             if self.parsed_args.action != "send" and self.parsed_args.new_line:
                 self.parser.error("Cannot enter new line using this action.")
 
@@ -61,7 +59,6 @@ class Parser(object):
                     self.parser.error("Must specify data to replace with and data being replaced in txt file.")
 
         elif self.parsed_args.command == 'network_manager':
-
             if not self.parsed_args.host or not self.parsed_args.port:
                 self.parser.error("Must specify host and port.")
 

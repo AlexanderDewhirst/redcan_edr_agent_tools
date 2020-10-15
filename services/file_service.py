@@ -4,7 +4,7 @@ import sys
 import os
 import csv
 
-class FileUtil(object):
+class FileService(object):
 
     def __init__(self, filename:str, **kwargs):
         self.filename  = filename

@@ -17,6 +17,8 @@ class NetworkLogger(BaseLogger):
     def format_message(self, message:str) -> str:
         """
         This function formats the log message.
+        Input:
+            - str
         Output:
             - str
         """

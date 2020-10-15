@@ -29,6 +29,12 @@ class RequestLogger(BaseLogger):
         return message
     
     def set_message(self):
+        """
+        This function sets the message given the status.
+        Output:
+            - str
+        # TODO: Add better description
+        """
         if self.status == 'info':
             message = "Process started."
         else:

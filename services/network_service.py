@@ -2,7 +2,7 @@
 
 import socket
 
-class NetworkUtil(object):
+class NetworkService(object):
 
     def __init__(self, host: str, port: int, **kwargs):
         self.host = host

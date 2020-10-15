@@ -27,7 +27,14 @@ class BaseLogger(object):
         self.__send_to_file()
         self.__dump_message()
 
-    def __set_status(self, status:bool):
+    def __set_status(self, status:bool) -> str:
+        """
+        This function sets the log status to a string.
+        Input:
+            - bool
+        Output:
+            - str
+        """
         if status == True:
             return 'info'
         elif status == False:
