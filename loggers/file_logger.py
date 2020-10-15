@@ -5,6 +5,7 @@ from .base_logger import BaseLogger
 class FileLogger(BaseLogger):
 
     def __init__(self, message:str, response:bool, namespace_args:object):
+        print("Logfile:", namespace_args.log_file)
         BaseLogger.__init__(self, response, namespace_args.log_file)
         self.message = self.format_message(message)
 
@@ -19,7 +20,7 @@ class FileLogger(BaseLogger):
         Output:
             - str
         """
-        message = "{} - {} {}:{} [{}] - {}: {} ({})\n".format(
+        message = "{} - {} {}:{} [{}] - {}: {} ({})".format(
             self.user_name,
             self.timestamp,
             self.process_name,

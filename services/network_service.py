@@ -37,7 +37,6 @@ class NetworkService(object):
             self._establish_connection()
             self.args['sock'].sendall(self.args['data'].encode())
             data = self.args['sock'].recv(1024)
-            print(data)
             # self.args['sock'].close()
             return log, True
         except:

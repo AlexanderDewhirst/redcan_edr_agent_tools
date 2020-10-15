@@ -5,10 +5,11 @@ import os
 import pwd
 import psutil
 import datetime
+from helpers.file_helper import FileHelper
 
 class BaseLogger(object):
 
-    def __init__(self, response:bool, output_file = None):
+    def __init__(self, response:bool, output_file:str):
             self.output_file        = output_file
             self.command            = self.__get_command()
             self.abs_file_path      = self.__get_abs_file_path()
@@ -60,11 +61,10 @@ class BaseLogger(object):
         """
         This function sends the data to the output file.
         """
-        if self.output_file:
-            with open(self.output_file, 'a') as log_file:
-                log_file.write(self.message)
-        else:
-            sys.stdout.write("No log filename specified.")
+        file_ext = self.output_file.split('.')[1]
+        response = FileHelper.send_to_file(self.output_file, self.message, file_ext, True)
+        if not response: # TODO: quickfix.. write better error message/ use better structure.
+            sys.stdout.write("Unhandled log filename specified.")
 
     def __set_timestamp(self):
         """

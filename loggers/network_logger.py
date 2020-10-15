@@ -22,7 +22,7 @@ class NetworkLogger(BaseLogger):
         Output:
             - str
         """
-        message = "{} - {} {}:{} [{}] - {}: {} ({}:{})\n".format(
+        message = "{} - {} {}:{} [{}] - {}: {} ({}:{})".format(
             self.user_name,
             self.timestamp,
             self.process_name,

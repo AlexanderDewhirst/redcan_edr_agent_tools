@@ -2,7 +2,7 @@
 
 import sys
 import os
-import csv
+from helpers.file_helper import FileHelper
 
 class FileService(object):
 
@@ -34,11 +34,8 @@ class FileService(object):
         """
         log = self._send_log()
         # NOTE: hotfix to handle extensions.
-            
-        if self.filename.split('.')[1] == 'txt': # Condition is weak
-            response = self._send_txt()
-        elif self.filename.split('.')[1] == 'csv': # Condition is weak
-            response = self._send_csv()
+        file_ext = self.filename.split('.')[1]
+        response = FileHelper.send_to_file(self.filename, self.args['data'], file_ext, self.args['new_line'])
         return log, response
 
     def replace(self) -> (str, bool):
@@ -48,91 +45,17 @@ class FileService(object):
             - str
             - bool
         """
-        if self.filename.split('.')[1] == 'csv': # Condition is weak
-            log = self._replace_csv_log()
-            response = self._replace_csv()
-        elif self.filename.split('.')[1] == 'txt': # Condition is weak
-            log = self._replace_txt_log()
-            response = self._replace_txt()
+        file_ext = self.filename.split('.')[1]
+        response = FileHelper.replace_in_file(
+            self.filename, self.args['data'],
+            self.args['replace_data'], 
+            file_ext,
+            self.args['row'],
+            self.args['column'],
+            self.args['new_line']
+        )
+        log = self._replace_log(file_ext)
         return log, response
-
-    def _send_csv(self) -> bool:
-        """
-        This function sends data to a csv file.
-        Output:
-            - bool
-        """
-        try:
-            with open(self.filename, 'a') as file:
-                if self.args['new_line']: # Sloppy way to create new line
-                    file.write(
-                        '\n{},'.format(self.args['data'])
-                    )
-                else:
-                    file.write(
-                        "{},".format(self.args['data'])
-                    )
-            return True
-        except:
-            return False
-
-    def _send_txt(self) -> bool:
-        """
-        This function sends data to a txt file.
-        Output:
-            - bool
-        """
-        try:
-            with open(self.filename, 'a') as file:
-                if self.args['new_line']:
-                    file.write(
-                        '\n{}'.format(self.args['data'])
-                    )
-                else:
-                    file.write(
-                        "{}".format(self.args['data'])
-                    )
-        
-            return True
-        except:
-            return False
-
-    def _replace_csv(self) -> bool:
-        """
-        This function replaces data in a csv using the 'row' and 'column' arguments provided.
-        Output:
-            - bool
-        # TODO: Fix double open file..
-        """
-        try:
-            content = None
-            with open(self.filename, newline = '') as file:
-                content = list(csv.reader(file))
-                content[self.args['row'] - 1][self.args['column'] - 1] = content[self.args['row'] - 1][self.args['column'] - 1].replace(self.args['replace_data'], self.args['data'])
-            with open(self.filename, 'w') as file:
-                writer = csv.writer(file)
-                writer.writerows(content)
-            return True
-        except:
-            return False
-
-    def _replace_txt(self) -> bool:
-        """
-        This function replaces data in a txt file.
-        Output:
-            - bool
-        # TODO: Fix double open file..
-        """
-        try:
-            content = None
-            with open(self.filename, 'r') as file:
-                content = file.read()
-                content = content.replace(self.args['replace_data'], self.args['data'])
-            with open(self.filename, 'w+') as file:
-                file.write(content)
-            return True
-        except:
-            return False
 
     def delete(self) -> (str, bool):
         """
@@ -171,32 +94,26 @@ class FileService(object):
         )
         return logger_msg
 
-    def _replace_csv_log(self) -> str:
+    def _replace_log(self, file_ext:str) -> str:
         """
-        This function formats a message when replacing data in a csv.
+        This function formats a message when replacing data in a file.
         Output:
             - str
         """
-        logger_msg = "Replacing {} to {} at ({}, {}) in {}".format(
-            self.args['replace_data'],
-            self.args['data'],
-            self.args['row'],
-            self.args['column'],
-            self.filename
-        )
-        return logger_msg
-
-    def _replace_txt_log(self) -> str:
-        """
-        This function formats a message when replacing data in a txt file.
-        Output:
-            - str
-        """
-        logger_msg = "Replacing {} to {} in {}".format(
-            self.args['replace_data'],
-            self.args['data'],
-            self.filename
-        )
+        if file_ext == 'csv':
+            logger_msg = "Replacing {} to {} at ({}, {}) in {}".format(
+                self.args['replace_data'],
+                self.args['data'],
+                self.args['row'],
+                self.args['column'],
+                self.filename
+            )
+        elif file_ext == 'txt':
+            logger_msg = "Replacing {} to {} in {}".format(
+                self.args['replace_data'],
+                self.args['data'],
+                self.filename
+            )
         return logger_msg
 
     def _delete_log(self) -> str:
