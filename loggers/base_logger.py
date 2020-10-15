@@ -53,9 +53,9 @@ class BaseLogger(object):
         This function writes the message using stderr or stdout depending on status.
         """
         if self.status == 'error':
-            sys.stderr.write(self.message)
+            sys.stderr.write(self.message + '\n')
         elif self.status == 'info':
-            sys.stdout.write(self.message)
+            sys.stdout.write(self.message + '\n')
 
     def __send_to_file(self):
         """

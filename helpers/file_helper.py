@@ -5,9 +5,6 @@ import csv
 class FileHelper:
     @staticmethod
     def send_to_file(filename:str, data:str, file_type:str, new_line:bool = False) -> bool:
-        print("filename", filename)
-        print("data", data)
-        print("file_type", file_type)
         try:
             with open(filename, 'a') as file:
                 if new_line:
