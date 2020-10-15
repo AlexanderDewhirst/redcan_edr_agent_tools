@@ -21,9 +21,11 @@ class FileService(object):
         try:
             with open(self.filename, 'w') as file:
                 pass
-            return log, True
+            status = True
         except:
-            return log, False
+            status = False
+        finally:
+            return self._construct_response(log, status)
 
     def send(self) -> (str, bool):
         """
@@ -33,15 +35,15 @@ class FileService(object):
             - bool
         """
         log = self._send_log()
-        # NOTE: hotfix to handle extensions.
+        # NOTE: potentially move 'try' block to this method
         file_ext = self.filename.split('.')[1]
-        response = FileHelper.send_to_file(
+        status = FileHelper.send_to_file(
             self.filename,
             self.args['data'],
             file_ext,
             self.args['new_line']
         )
-        return log, response
+        return self._construct_response(log, status)
 
     def replace(self) -> (str, bool):
         """
@@ -52,7 +54,7 @@ class FileService(object):
         """
         file_ext = self.filename.split('.')[1]
         if file_ext == 'csv':
-            response = FileHelper.replace_in_file(
+            status = FileHelper.replace_in_file(
                 self.filename,
                 self.args['data'],
                 self.args['replace_data'], 
@@ -61,14 +63,14 @@ class FileService(object):
                 self.args['column'],
             )
         elif file_ext == 'txt':
-            response = FileHelper.replace_in_file(
+            status = FileHelper.replace_in_file(
                 self.filename,
                 self.args['data'],
                 self.args['replace_data'], 
                 file_ext
             )
         log = self._replace_log(file_ext)
-        return log, response
+        return self._construct_response(log, status)
 
     def delete(self) -> (str, bool):
         """
@@ -80,9 +82,11 @@ class FileService(object):
         log = self._delete_log()
         try:
             os.remove(self.filename)
-            return log, True
+            status = True
         except:
-            return log, False
+            status = False
+        finally:
+            return self._construct_response(log, status)
 
     def _create_log(self) -> str:
         """
@@ -139,3 +143,11 @@ class FileService(object):
             self.filename
         )
         return logger_msg
+
+    def _construct_response(self, log:str, status:bool, data:dict = None) -> dict:
+        response = {
+            'log': log,
+            'status': status,
+            'data': data
+        }
+        return response

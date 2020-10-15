@@ -9,18 +9,18 @@ class NetworkController(object):
         self.host     = namespace_args.host
         self.port     = namespace_args.port
         self.args     = self._map_args(namespace_args)
-        self.response = None
         self.status   = None
+        self.data     = None
 
     def __call__(self):
-        response, status = self.map_action()
-        self.response = response
-        self.status   = status
+        response = self.map_action()
+        self.status   = response['status']
+        self.data     = response['data']
         return self
 
     def map_action(self) -> (str, bool):
         """
-        This funciton maps the action to the corresponding method in NetworkService.
+        This function maps the action to the corresponding method in NetworkService.
         Input:
             - action: str
             - args: Namespace
@@ -31,7 +31,7 @@ class NetworkController(object):
         """
         network_service = NetworkService(self.host, self.port, **self.args)
         try:
-            log, response = getattr(network_service, self.action)()
+            response = getattr(network_service, self.action)()
         except:
             raise BaseException(
                 "Unexpected action: '{}' does not map to controller"
@@ -39,7 +39,7 @@ class NetworkController(object):
                     self.action
                 )
             )
-        return log, response
+        return response
 
     def _map_args(self, namespace_args):
         """

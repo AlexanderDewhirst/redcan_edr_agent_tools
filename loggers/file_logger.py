@@ -4,8 +4,8 @@ from .base_logger import BaseLogger
 
 class FileLogger(BaseLogger):
 
-    def __init__(self, message:str, response:bool, namespace_args:object):
-        BaseLogger.__init__(self, response, namespace_args.log_file)
+    def __init__(self, message:str, status:bool, data:dict, namespace_args:object):
+        BaseLogger.__init__(self, status, namespace_args.log_file)
         self.message = self.format_message(message)
 
     def __call__(self):

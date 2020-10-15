@@ -8,7 +8,7 @@ class NetworkService(object):
         self.host = host
         self.port = port
         self.args = kwargs
-        self.__init_sock()
+        self.sock = self.__init_sock()
 
     def connect(self) -> (str, bool):
         """
@@ -17,13 +17,18 @@ class NetworkService(object):
             - str
             - bool
         """
-        log = self._connect_log()
+        # log = self._connect_log()
+        data = {'sock': {'source': {}, 'destination': {}}}
         try:
             self._establish_connection()
-            self.args['sock'].close()
-            return log, True
+            data['sock']['source']['host'], data['sock']['source']['port'] = self.__get_socket_source()
+            data['sock']['destination']['host'], data['sock']['destination']['port'] = self.__get_socket_destination()
+            self.sock.close()
+            status = True
         except:
-            return log, False
+            status = False
+        finally:
+            return self._construct_response(status, data)
 
     def send(self) -> (str, bool):
         """
@@ -32,15 +37,20 @@ class NetworkService(object):
             - str
             - bool
         """
-        log = self._send_log()
+        # NOTE: Pythone requires keys to be constructed beforehand. Otherwise is throws a KeyError
+        data = {'sock': {'source': {}, 'destination': {}, 'message': ''}}
         try:
             self._establish_connection()
-            self.args['sock'].sendall(self.args['data'].encode())
-            data = self.args['sock'].recv(1024)
-            # self.args['sock'].close()
-            return log, True
+            data['sock']['source']['host'], data['sock']['source']['port'] = self.__get_socket_source()
+            data['sock']['destination']['host'], data['sock']['destination']['port'] = self.__get_socket_destination()
+            data['sock']['message'] = self.args['data']
+            self.sock.sendall(self.args['data'].encode())
+            self.sock.close()
+            status = True
         except:
-            return log, False
+            status = False
+        finally:
+            return self._construct_response(status, data)
 
     def close(self) -> (str, bool):
         """
@@ -49,59 +59,45 @@ class NetworkService(object):
             - str
             - bool
         """
-        log = self._close_log()
+        # log = self._close_log()
+        data = {'sock': {'source': {}, 'destination': {}}}
         try:
             self._establish_connection()
-            self.args['sock'].close()
-            return log, True
+            data['sock']['source']['host'], data['socket']['source']['port'] = self.__get_socket_source()
+            data['sock']['destination']['host'], data['socket']['destination']['port'] = self.__get_socket_destination()
+            self.sock.close()
+            status = True
         except:
-            return log, False
+            status = False
+        finally:
+            return self._construct_response(status, data)
 
-    def _connect_log(self) -> str:
-        """
-        This function formats a log message when connecting to a server.
-        Output:
-            - str
-        """
-        logger_msg = "Establishing connection to host '{}' and port '{}'".format(
-            self.host,
-            self.port
-        )
-        return logger_msg
-
-    def _send_log(self) -> str:
-        """
-        This function formats a log message when sending data to a server.
-        Output:
-            - str
-        """
-        logger_msg = "Sending '{}' to socket at host '{}' and port '{}'".format(
-            self.args['data'],
-            self.host,
-            self.port
-        )
-        return logger_msg
-
-    def _close_log(self) -> str:
-        """
-        This function formats a log message when closing a connection.
-        Output:
-            - str
-        """
-        logger_msg = "Closing connection to host '{}' and port '{}'".format(
-            self.host,
-            self.port
-        )
-        return logger_msg
-
+    
     def _establish_connection(self):
-        self.args['sock'].connect((self.host, self.port))
+        self.sock.connect((self.host, self.port))
 
     def __init_sock(self):
         """
         This function creates an open socket if none is present.
         """
         if 'sock' not in self.args:
-            self.args['sock'] = socket.socket(
+            return socket.socket(
                 socket.AF_INET, socket.SOCK_STREAM
             )
+        else:
+            return self.args['sock']
+
+    def _construct_response(self, status:bool, data:dict = None) -> dict:
+        response = {
+            'status': status,
+            'data': data
+        }
+        return response
+
+    def __get_socket_source(self):
+        socket_source = self.sock.getsockname()
+        return socket_source
+
+    def __get_socket_destination(self):
+        socket_destination = self.sock.getpeername()
+        return socket_destination

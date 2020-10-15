@@ -17,7 +17,18 @@ RequestLogger(request.status, request.parsed_args)()
 # Controller
 base_controller = BaseController(request.parsed_args)
 controller = base_controller()
+
 if controller.subcontroller.__class__.__name__ == 'FileController':
-    FileLogger(controller.subcontroller.response, controller.subcontroller.status, request.parsed_args)()
+    FileLogger(
+        controller.subcontroller.action,
+        controller.subcontroller.status,
+        controller.subcontroller.data,
+        request.parsed_args
+    )()
 elif controller.subcontroller.__class__.__name__ == 'NetworkController':
-    NetworkLogger(controller.subcontroller.response, controller.subcontroller.status, request.parsed_args)()
+    NetworkLogger(
+        controller.subcontroller.action,
+        controller.subcontroller.status,
+        controller.subcontroller.data,
+        request.parsed_args
+    )()

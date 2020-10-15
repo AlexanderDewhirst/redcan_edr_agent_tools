@@ -8,13 +8,13 @@ class FileController(object):
         self.action     = namespace_args.action
         self.file       = namespace_args.file
         self.args       = self._map_args(namespace_args)
-        self.response   = None
         self.status     = None
+        self.data       = None
 
     def __call__(self):
-        response, status = self.map_action()
-        self.response = response
-        self.status = status
+        response = self.map_action()
+        self.status   = response['status']
+        # self.data     = response['data']
         return self
 
     def map_action(self) -> (str, bool):
@@ -30,7 +30,7 @@ class FileController(object):
         """
         file_service = FileService(self.file, **self.args)
         try:
-            log, response = getattr(file_service, self.action)()
+            response = getattr(file_service, self.action)()
         except:
             raise BaseException(
                 "Unexpected action: '{}' does not map to controller"
@@ -38,7 +38,7 @@ class FileController(object):
                     self.action
                 )
             )
-        return log, response
+        return response
 
     def _map_args(self, namespace_args):
         """
