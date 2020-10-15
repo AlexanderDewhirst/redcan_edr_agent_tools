@@ -14,7 +14,7 @@ class FileController(object):
     def __call__(self):
         response = self.map_action()
         self.status   = response['status']
-        # self.data     = response['data']
+        self.data     = response['data']
         return self
 
     def map_action(self) -> (str, bool):

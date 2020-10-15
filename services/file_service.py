@@ -10,32 +10,30 @@ class FileService(object):
         self.filename  = filename
         self.args      = kwargs 
 
-    def create(self) -> (str, bool):
+    def create(self) -> dict:
         """
         This function creates a file.
         Output:
-            - str
-            - bool
+            - dict
         """
-        log = self._create_log()
         try:
             with open(self.filename, 'w') as file:
                 pass
+            data = {'filename': self.filename}
             status = True
         except:
             status = False
         finally:
-            return self._construct_response(log, status)
+            return self._construct_response(status, data)
 
-    def send(self) -> (str, bool):
+    def send(self) -> dict:
         """
         This function sends data to a file.
         Output:
-            - str
-            - bool
+            - dict
         """
-        log = self._send_log()
         # NOTE: potentially move 'try' block to this method
+        data = {'message': self.args['data'], 'filename': self.filename}
         file_ext = self.filename.split('.')[1]
         status = FileHelper.send_to_file(
             self.filename,
@@ -43,15 +41,15 @@ class FileService(object):
             file_ext,
             self.args['new_line']
         )
-        return self._construct_response(log, status)
+        return self._construct_response(status, data)
 
-    def replace(self) -> (str, bool):
+    def replace(self) -> dict:
         """
         This function determines how to replace data.
         Output:
-            - str
-            - bool
+            - dict
         """
+        data = {'message': self.args['data'], 'replace_message': self.args['replace_data'], 'row': '', 'column': '', 'filename': self.filename}
         file_ext = self.filename.split('.')[1]
         if file_ext == 'csv':
             status = FileHelper.replace_in_file(
@@ -62,6 +60,9 @@ class FileService(object):
                 self.args['row'],
                 self.args['column'],
             )
+            
+            data['row'] = self.args['row']
+            data['column'] = self.args['column']
         elif file_ext == 'txt':
             status = FileHelper.replace_in_file(
                 self.filename,
@@ -69,84 +70,33 @@ class FileService(object):
                 self.args['replace_data'], 
                 file_ext
             )
-        log = self._replace_log(file_ext)
-        return self._construct_response(log, status)
+        return self._construct_response(status)
 
-    def delete(self) -> (str, bool):
+    def delete(self) -> dict:
         """
         This function deletes the file.
         Output:
-            - str
-            - bool
+            - dict
         """
-        log = self._delete_log()
+        data = {'filename': self.filename}
         try:
             os.remove(self.filename)
             status = True
         except:
             status = False
         finally:
-            return self._construct_response(log, status)
+            return self._construct_response(status, data)    
 
-    def _create_log(self) -> str:
+    def _construct_response(self, status:bool, data:dict = None) -> dict:
         """
-        This function formats a message when creating a file.
+        This function constructs the data object for the Logger
+        Input:
+            - bool
+            - dict (opt.)
         Output:
-            - str
+            - dict
         """
-        logger_msg = "Creating file {}".format(
-            self.filename
-        )
-        return logger_msg
-
-    def _send_log(self) -> str:
-        """
-        This function formats a message when sending data to a file.
-        Output:
-            - str
-        """
-        logger_msg = "Sending {} to {}".format(
-            self.args['data'],
-            self.filename
-        )
-        return logger_msg
-
-    def _replace_log(self, file_ext:str) -> str:
-        """
-        This function formats a message when replacing data in a file.
-        Output:
-            - str
-        """
-        if file_ext == 'csv':
-            logger_msg = "Replacing {} to {} at ({}, {}) in {}".format(
-                self.args['replace_data'],
-                self.args['data'],
-                self.args['row'],
-                self.args['column'],
-                self.filename
-            )
-        elif file_ext == 'txt':
-            logger_msg = "Replacing {} to {} in {}".format(
-                self.args['replace_data'],
-                self.args['data'],
-                self.filename
-            )
-        return logger_msg
-
-    def _delete_log(self) -> str:
-        """
-        This function formats a message when deleting a file.
-        Output:
-            - str
-        """
-        logger_msg = "Deleting {}".format(
-            self.filename
-        )
-        return logger_msg
-
-    def _construct_response(self, log:str, status:bool, data:dict = None) -> dict:
         response = {
-            'log': log,
             'status': status,
             'data': data
         }

@@ -4,8 +4,8 @@ from .base_logger import BaseLogger
 
 class NetworkLogger(BaseLogger):
 
-    def __init__(self, action:str, status:bool, data:dict, namespace_args:object):
-        BaseLogger.__init__(self, status, namespace_args.log_file)
+    def __init__(self, action:str, status:bool, data:dict, log_file:str):
+        BaseLogger.__init__(self, status, log_file)
         self.data = data
         self.message = self.format_message(action)
 

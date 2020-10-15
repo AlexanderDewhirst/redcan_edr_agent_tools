@@ -4,8 +4,8 @@ from .base_logger import BaseLogger
 
 class RequestLogger(BaseLogger):
 
-    def __init__(self, response:bool, namespace_args:object):
-        BaseLogger.__init__(self, response, namespace_args.log_file)
+    def __init__(self, response:bool, log_file:str):
+        BaseLogger.__init__(self, response, log_file)
         self.message = self.format_message()
 
     def __call__(self):
@@ -28,7 +28,7 @@ class RequestLogger(BaseLogger):
         )
         return message
     
-    def set_message(self):
+    def set_message(self) -> str:
         """
         This function sets the message given the status.
         Output:

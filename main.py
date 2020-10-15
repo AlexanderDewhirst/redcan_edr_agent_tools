@@ -12,7 +12,7 @@ request = parser()
 # TODO: Check if connection to socket has already been established.
 
 # RequestLogger
-RequestLogger(request.status, request.parsed_args)()
+RequestLogger(request.status, request.parsed_args.log_file)()
 
 # Controller
 base_controller = BaseController(request.parsed_args)
@@ -23,12 +23,12 @@ if controller.subcontroller.__class__.__name__ == 'FileController':
         controller.subcontroller.action,
         controller.subcontroller.status,
         controller.subcontroller.data,
-        request.parsed_args
+        request.parsed_args.log_file
     )()
 elif controller.subcontroller.__class__.__name__ == 'NetworkController':
     NetworkLogger(
         controller.subcontroller.action,
         controller.subcontroller.status,
         controller.subcontroller.data,
-        request.parsed_args
+        request.parsed_args.log_file
     )()

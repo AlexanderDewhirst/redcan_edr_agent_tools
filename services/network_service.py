@@ -10,14 +10,12 @@ class NetworkService(object):
         self.args = kwargs
         self.sock = self.__init_sock()
 
-    def connect(self) -> (str, bool):
+    def connect(self) -> dict:
         """
         This function establishes a connection to a server using the 'socket' Python library.
         Output:
-            - str
-            - bool
+            - dict
         """
-        # log = self._connect_log()
         data = {'sock': {'source': {}, 'destination': {}}}
         try:
             self._establish_connection()
@@ -30,20 +28,19 @@ class NetworkService(object):
         finally:
             return self._construct_response(status, data)
 
-    def send(self) -> (str, bool):
+    def send(self) -> dict:
         """
         This function sends data to a server using the 'socket' Python library.
         Output:
-            - str
-            - bool
+            - dict
         """
-        # NOTE: Pythone requires keys to be constructed beforehand. Otherwise is throws a KeyError
-        data = {'sock': {'source': {}, 'destination': {}, 'message': ''}}
+        # NOTE: Python requires keys to be constructed beforehand. Otherwise is throws a KeyError
+        data = {'sock': {'source': {}, 'destination': {}}, 'message': ''}
         try:
             self._establish_connection()
             data['sock']['source']['host'], data['sock']['source']['port'] = self.__get_socket_source()
             data['sock']['destination']['host'], data['sock']['destination']['port'] = self.__get_socket_destination()
-            data['sock']['message'] = self.args['data']
+            data['message'] = self.args['data']
             self.sock.sendall(self.args['data'].encode())
             self.sock.close()
             status = True
@@ -52,14 +49,12 @@ class NetworkService(object):
         finally:
             return self._construct_response(status, data)
 
-    def close(self) -> (str, bool):
+    def close(self) -> dict:
         """
         This function closes a connection using the 'socket' Python library.
         Output:
-            - str
-            - bool
+            - dict
         """
-        # log = self._close_log()
         data = {'sock': {'source': {}, 'destination': {}}}
         try:
             self._establish_connection()
@@ -74,6 +69,9 @@ class NetworkService(object):
 
     
     def _establish_connection(self):
+        """
+        This function establishes the connection to the socket.
+        """
         self.sock.connect((self.host, self.port))
 
     def __init_sock(self):
@@ -88,6 +86,14 @@ class NetworkService(object):
             return self.args['sock']
 
     def _construct_response(self, status:bool, data:dict = None) -> dict:
+        """
+        This function constructs the data object for the Logger
+        Input:
+            - bool
+            - dict (opt.)
+        Output:
+            - dict
+        """
         response = {
             'status': status,
             'data': data
@@ -95,9 +101,17 @@ class NetworkService(object):
         return response
 
     def __get_socket_source(self):
-        socket_source = self.sock.getsockname()
-        return socket_source
+        """
+        This function gets the source host and port
+        Outpuf:
+            - tuple
+        """
+        return self.sock.getsockname()
 
     def __get_socket_destination(self):
-        socket_destination = self.sock.getpeername()
-        return socket_destination
+        """
+        This function gets the destination host and port
+        Output:
+            - tuple
+        """
+        return self.sock.getpeername()
