@@ -10,6 +10,7 @@ class NetworkLogger(BaseLogger):
         self.message = self.format_message(action)
 
     def __call__(self):
+        super().__call__()
         return self
 
     def format_message(self, action:str) -> str:
