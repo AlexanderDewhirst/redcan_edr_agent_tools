@@ -93,6 +93,7 @@ To connect to a host and port, for example:
 python3 ./main.py network_manager -a connect -l logfile.txt --host localhost --port 4000
 ```
 More examples can be found in the Script Commands section.
+NOTE: Unfortunately, the server (`python3 listener.py`) must be reset for each script command.
 
 ### Controllers
 There are three controllers in this project: BaseController, FileController, and NetworkController. The BaseController, initialized with the `parsed_args` attribute from the Parser, implements a factory design pattern, creating an instance of the NetworkController or FileController using a common interface. These "subcontroller", the FileController and NetworkController, then call a Service class.

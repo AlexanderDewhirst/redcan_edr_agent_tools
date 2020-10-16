@@ -59,8 +59,8 @@ class NetworkService(object):
         data = {'sock': {'source': {}, 'destination': {}}}
         try:
             self._establish_connection()
-            data['sock']['source']['host'], data['socket']['source']['port'] = self.__get_socket_source()
-            data['sock']['destination']['host'], data['socket']['destination']['port'] = self.__get_socket_destination()
+            data['sock']['source']['host'], data['sock']['source']['port'] = self.__get_socket_source()
+            data['sock']['destination']['host'], data['sock']['destination']['port'] = self.__get_socket_destination()
             self.sock.close()
             status = True
         except:
