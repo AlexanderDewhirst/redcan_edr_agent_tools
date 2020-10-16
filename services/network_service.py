@@ -22,6 +22,7 @@ class NetworkService(object):
             self._establish_connection()
             data['sock']['source']['host'], data['sock']['source']['port'] = self.__get_socket_source()
             data['sock']['destination']['host'], data['sock']['destination']['port'] = self.__get_socket_destination()
+            data['size'] = 0 # HOTFIX
             self.sock.close()
             status = True
         except:
@@ -36,11 +37,12 @@ class NetworkService(object):
             - dict
         """
         # NOTE: Python requires keys to be constructed beforehand. Otherwise is throws a KeyError
-        data = {'sock': {'source': {}, 'destination': {}}, 'message': ''}
+        data = {'sock': {'source': {}, 'destination': {}}, 'message': '', 'size': ''}
         try:
             self._establish_connection()
             data['sock']['source']['host'], data['sock']['source']['port'] = self.__get_socket_source()
             data['sock']['destination']['host'], data['sock']['destination']['port'] = self.__get_socket_destination()
+            data['size'] = self.__get_size()
             data['message'] = self.args['data']
             self.sock.sendall(self.args['data'].encode())
             self.sock.close()
@@ -61,6 +63,7 @@ class NetworkService(object):
             self._establish_connection()
             data['sock']['source']['host'], data['sock']['source']['port'] = self.__get_socket_source()
             data['sock']['destination']['host'], data['sock']['destination']['port'] = self.__get_socket_destination()
+            data['size'] = 0 # HOTFIX
             self.sock.close()
             status = True
         except:
@@ -101,3 +104,12 @@ class NetworkService(object):
             - tuple
         """
         return self.sock.getpeername()
+
+    def __get_size(self):
+        """
+        This function gets the size of the string.
+        Output:
+            - str
+        """
+        return len(self.args['data'].encode('utf-8'))
+        

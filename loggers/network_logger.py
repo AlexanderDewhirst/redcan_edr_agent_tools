@@ -26,9 +26,9 @@ class NetworkLogger(BaseLogger):
         log = getattr(self, "_{}_log".format(action))()
         logfile_ext = FileHelper.get_ext(log_file)
         if logfile_ext == 'txt':
-            base = "{} - {} {}:{} [{}] - {}: {} (Source - {}:{}) (Destination - {}:{}) Protocol: {}"
+            base = "{} - {} {}:{} [{}] - {}: {} (Source - {}:{}) (Destination - {}:{}), Size: {}, Protocol: {}"
         elif logfile_ext == 'csv':
-            base = "{},{},{},{},{},{},{},{},{},{},{},{}"
+            base = "{},{},{},{},{},{},{},{},{},{},{},{},{}"
         message = base.format(
             self.user_name,
             self.timestamp,
@@ -41,7 +41,7 @@ class NetworkLogger(BaseLogger):
             self.data['sock']['source']['port'],
             self.data['sock']['destination']['host'],
             self.data['sock']['destination']['port'],
-            # Size of Data
+            self.data['size'],
             'TCP' # TODO: Get protocol from socket.
         )
 
@@ -63,7 +63,7 @@ class NetworkLogger(BaseLogger):
             - str
         """
         logger_msg = "Sending '{}' to socket.".format(
-            self.data['message'],
+            self.data['message']
         )
         return logger_msg
 
