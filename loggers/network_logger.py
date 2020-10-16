@@ -21,7 +21,7 @@ class NetworkLogger(BaseLogger):
             - str
         """
         log = getattr(self, "_{}_log".format(action))()
-        message = "{} - {} {}:{} [{}] - {}: {} (Source - {}:{}) (Destination - {}:{})".format(
+        message = "{} - {} {}:{} [{}] - {}: {} (Source - {}:{}) (Destination - {}:{}) Protocol: {}".format(
             self.user_name,
             self.timestamp,
             self.process_name,
@@ -34,7 +34,7 @@ class NetworkLogger(BaseLogger):
             self.data['sock']['destination']['host'],
             self.data['sock']['destination']['port'],
             # Size of Data
-            # Protocol of Data,
+            'TCP' # TODO: Get protocol from socket.
         )
 
         return message
@@ -55,7 +55,7 @@ class NetworkLogger(BaseLogger):
             - str
         """
         logger_msg = "Sending '{}' to socket.".format(
-            self.data['sock']['message'],
+            self.data['message'],
         )
         return logger_msg
 

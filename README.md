@@ -1,8 +1,19 @@
 # RedCan EDR Agent tools
 
-The goal of this application is to create a framework that allows us to generate endpoint activity across at least two of three supported platforms (Windows, macOS, Linux). This program will allow us to test an EDR agent and ensure it generates the appropriate telemetry.
+The goal of this application is to create a framework that allows us to generate endpoint activity across at least two of three supported platforms (Windows, macOS, Linux). Currently, this application is supported for all three platforms with this particular setup:
+ - Windows 10 Version 1909 64-bit (testing locally)
+ - MacOS Catalina Version 10.15.3 (testing locally)
+ - Ubuntu Version 18.04 (testing in Docker)
 
-The program should trigger the following activity:
+## Getting started
+Clone this repository and install the dependencies located in `requirements.txt`
+```
+pip3 install -r requirements.txt
+```
+
+## Project Outline
+
+This program will allow us to test an EDR agent and ensure it generates the appropriate telemetry. The program should trigger the following activity:
 - Start a process, given a path to an executable file and the desired (optional) command-line arguments
 - Create a file of a specified type at a specified location
 - Modify a file
@@ -37,7 +48,7 @@ This log should be in a machine friendly format (e.g. CSV, TSV, JSON, YAML, etc)
 
 
 ## Architecture
-This repository contains a CLI to handle file management and network management using the 'argparse' Python library. There are four class types: Parser, to act as a CLI and parse the arguments; Controller, to control the request processing; Service, to provide a way for the client to interact with some functionality in the application; and Logger, a simple framework for emitting log messages.
+This repository contains a CLI to handle file management and network management using the 'argparse' Python library. There are four class types: Parser, to act as a CLI and parse the arguments; Controller, to control the request processing; Service, to construct a way for the client to interact with some functionality in the application; and Logger, to provide a simple framework for emitting log messages.
 
 ### Parser
 The Parser class uses the argparse library to parse command line arguments. The parser contains two subparsers `file_manager` and `network_manager`, providing an interface to separate services in the application. Calling a parser instance will return a Parser object where the attribute `parsed_args` will contain the Namespace object returned from `argparse.parse_args()` method.
@@ -107,14 +118,14 @@ The general format of the Logger message is the following:
 - logger specific details if necessary (absolute file path or host/port)
 
 ## Testing Operating Systems
-This application has been developed in a macOS environment and since Docker does not have the ability to containerize macOS or Windows OS, setting up a test environment within another operating system proves difficult. The Dockerfile in the application builds an image using the official Ubuntu version 18.04 image in Docker Hub and since both macOS and Linux are built on Unix, I believe this suffices. After installing Docker, you can run the following commands to get the Linux test environment running:
+This application has been developed in a macOS environment and since Docker does not have the ability to containerize macOS or Windows OS, setting up a test environment within Docker for another operating system proves difficult. The Dockerfile in the application builds an image using the official Ubuntu version 18.04 image in Docker Hub and since both macOS and Linux are built on Unix, I believe this suffices. After installing Docker, you can run the following commands to get the Linux test environment running:
 ```
 docker build --tag redcan_edr_agent_tools:1.0 .
 ```
 
 This may take a few minutes. Afterwards, you can run the image with:
 ```
-docker run --entrypoint /bin/bash -i -t <container_name>:1.0 
+docker run --entrypoint /bin/bash -i -t redcan_edr_agent_tools:1.0 
 ```
 
 This will open bash and allow you to test the application. The commands can be found in the Script Commands section. You can open the output file or log file with:
@@ -162,8 +173,22 @@ Example networks command are:
 ```
 # Shell 1
 python3 listener.py
+
 # Shell 2
 python3 main.py network_manager -a connect -l logfile.txt --host localhost --port 4000
 python3 main.py network_manager -a send -l logfile.txt --host localhost --port 4000 -d "Send my data."
 python3 main.py network_manager -a close -l logfile.txt
 ```
+
+## Future Changes
+Here is a list of potential changes to be made in the future:
+- Refactor Logger and remove the conditional within `main.py` to provide separation between concerns.
+- Look into `argparse.FileType` to handle the files created/edited/deleted and the logger files.
+- Remove logic to determine file extension in the `filename` and `log_filename` arguments.
+- Look into `logging` Python library and handle more file formats
+- Change Logger to csv logic to construct "cell" for each argument in a log message
+- Look into adding the urllib to allow CLI to accept additional transfer protocols
+- Add a test suite
+- Use `argparse` Python library in `listener.py`
+- Allow server in `listener.py` to accept multiple concurrent connections
+- Provide better error handling

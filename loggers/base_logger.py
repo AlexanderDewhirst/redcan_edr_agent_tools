@@ -2,7 +2,10 @@
 
 import sys
 import os
-import pwd
+if sys.platform == 'darwin' or sys.platform == 'linux':
+    import pwd
+elif sys.platform == 'win32':
+    import getpass
 import psutil
 import datetime
 from helpers.file_helper import FileHelper
@@ -90,7 +93,11 @@ class BaseLogger(object):
         Output:
             - str
         """
-        return pwd.getpwuid(os.getuid())[0]
+        if sys.platform == 'darwin' or sys.platform == 'linux':
+            return pwd.getpwuid(os.getuid())[0]
+        elif sys.platform == 'win32':
+            return getpass.getuser()
+
     
     def __get_process(self):
         """
