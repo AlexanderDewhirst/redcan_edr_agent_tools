@@ -2,8 +2,7 @@
 
 from parsers.parser import Parser
 from controllers.base_controller import BaseController
-from loggers.network_logger import NetworkLogger
-from loggers.file_logger import FileLogger
+from loggers.controller_logger import ControllerLogger
 from loggers.request_logger import RequestLogger
 
 # Parser
@@ -18,17 +17,27 @@ RequestLogger(request.status, request.parsed_args.log_file)()
 base_controller = BaseController(request.parsed_args)
 controller = base_controller()
 
-if controller.subcontroller.__class__.__name__ == 'FileController':
-    FileLogger(
-        controller.subcontroller.action,
-        controller.subcontroller.status,
-        controller.subcontroller.data,
-        request.parsed_args.log_file
-    )()
-elif controller.subcontroller.__class__.__name__ == 'NetworkController':
-    NetworkLogger(
-        controller.subcontroller.action,
-        controller.subcontroller.status,
-        controller.subcontroller.data,
-        request.parsed_args.log_file
-    )()
+# Logger
+controller_logger = ControllerLogger(
+    controller.subcontroller.__class__.__name__,
+    controller.subcontroller.action,
+    controller.subcontroller.status,
+    controller.subcontroller.data,
+    request.parsed_args.log_file
+)
+controller_logger()
+
+# if controller.subcontroller.__class__.__name__ == 'FileController':
+#     FileLogger(
+#         controller.subcontroller.action,
+#         controller.subcontroller.status,
+#         controller.subcontroller.data,
+#         request.parsed_args.log_file
+#     )()
+# elif controller.subcontroller.__class__.__name__ == 'NetworkController':
+#     NetworkLogger(
+#         controller.subcontroller.action,
+#         controller.subcontroller.status,
+#         controller.subcontroller.data,
+#         request.parsed_args.log_file
+#     )()
