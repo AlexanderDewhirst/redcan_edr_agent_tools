@@ -26,18 +26,3 @@ controller_logger = ControllerLogger(
     request.parsed_args.log_file
 )
 controller_logger()
-
-# if controller.subcontroller.__class__.__name__ == 'FileController':
-#     FileLogger(
-#         controller.subcontroller.action,
-#         controller.subcontroller.status,
-#         controller.subcontroller.data,
-#         request.parsed_args.log_file
-#     )()
-# elif controller.subcontroller.__class__.__name__ == 'NetworkController':
-#     NetworkLogger(
-#         controller.subcontroller.action,
-#         controller.subcontroller.status,
-#         controller.subcontroller.data,
-#         request.parsed_args.log_file
-#     )()
