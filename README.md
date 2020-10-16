@@ -139,6 +139,7 @@ Further testing of the network manager - To bind and listen to a socket locally,
 python3 listener.py
 ```
 in an open bash and run the script commands in another. This script creates a server at `127.0.0.1:4000` (or localhost port 4000).
+
 NOTE: Currently establishing a connection in every command to the network manager.
 
 To connect to a running docker container, to test using listener.py, you can run:
