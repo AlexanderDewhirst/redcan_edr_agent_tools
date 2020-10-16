@@ -92,7 +92,7 @@ To connect to a host and port, for example:
 ```
 python3 ./main.py network_manager -a connect -l logfile.txt --host localhost --port 4000
 ```
-More examples can be found in the Script Commands section.
+More examples can be found in the Commands -> Script section.
 NOTE: Unfortunately, the server (`python3 listener.py`) must be reset for each script command.
 
 ### Controllers
@@ -103,7 +103,7 @@ Services provide functionality to the application. This functionality performs s
 
 ### Loggers
 NOTE: Expected to change.
-There are four Logger classes. The BaseLogger offers basic functionality and is encapsulated in the RequestLogger, FileLogger, and NetworkLogger. The RequestLogger, accepts arguments for `status` and `parsed_args` which formats a simple message stating whether the arguments could be processed. The FileLogger and NetworkLogger, called depending on the subparser, controller, and service requested, formats a log message with the requested arguments in the assessment outline.
+There are five Logger classes. The BaseLogger offers basic functionality and is encapsulated in the RequestLogger, FileLogger, and NetworkLogger. The RequestLogger, accepts arguments for `status` and `parsed_args` which formats a simple message stating whether the arguments could be processed. The ControllerLogger acts as a factory for the FileLogger and NetworkLogger to collect the correct message. The FileLogger and NetworkLogger, called depending on the subparser, controller, and service requested, formats a log message with the requested arguments in the assessment outline. 
 
 ### Helpers
 There are two Helper classes. The FileHelper class decouples the action to write to a file from the FileService class to allow the Logger to utilize the same method to write to the `log_filename` argument. The FileHelper class also decouples the action to replace within a file. The ServiceHelper helps to maintain a DRY development practice by allowing the utilization of constructing the service response object in both the NetworkService and FileService classes.
@@ -129,7 +129,7 @@ This may take a few minutes. Afterwards, you can run the image with:
 docker run --entrypoint /bin/bash -i -t redcan_edr_agent_tools:1.0 
 ```
 
-This will open bash and allow you to test the application. The commands can be found in the Script Commands section. You can open the output file or log file with:
+This will open bash and allow you to test the application. The commands can be found in the Commands -> Script section. You can open the output file or log file with:
 ```
 cat <filename>
 ```
@@ -138,7 +138,7 @@ Further testing of the network manager - To bind and listen to a socket locally,
 ```
 python3 listener.py
 ```
-in an open bash and run the script commands in another. This script creates a server at '127.0.0.1:4000` (or localhost port 4000).
+in an open bash and run the script commands in another. This script creates a server at `127.0.0.1:4000` (or localhost port 4000).
 NOTE: Currently establishing a connection in every command to the network manager.
 
 To connect to a running docker container, to test using listener.py, you can run:
@@ -151,7 +151,14 @@ and you can find the container_id with:
 docker ps
 ```
 
-## Script Commands
+## Commands
+### Shell
+To run the file management features, you can execute the bash script provided with:
+```
+bash run.sh
+```
+
+### Script
 Example file commands are as follows:
 ```
 python3 main.py file_manager -a create -l logfile.txt -f output.txt
@@ -183,7 +190,6 @@ python3 main.py network_manager -a close -l logfile.txt
 
 ## Future Changes
 Here is a list of potential changes to be made in the future:
-- Refactor Logger and remove the conditional within `main.py` to provide separation between concerns.
 - Look into `argparse.FileType` to handle the files created/edited/deleted and the logger files.
 - Remove logic to determine file extension in the `filename` and `log_filename` arguments.
 - Look into `logging` Python library and handle more file formats
