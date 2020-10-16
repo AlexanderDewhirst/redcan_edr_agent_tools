@@ -64,7 +64,7 @@ class BaseLogger(object):
         """
         This function sends the data to the output file.
         """
-        file_ext = self.output_file.split('.')[1]
+        file_ext = FileHelper.get_ext(self.output_file)
         response = FileHelper.send_to_file(self.output_file, self.message, file_ext, True)
         if not response: # TODO: quickfix.. write better error message/ use better structure.
             sys.stdout.write("Unhandled log filename specified.")

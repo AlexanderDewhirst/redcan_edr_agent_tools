@@ -55,3 +55,7 @@ class FileHelper:
                 return True
             except:
                 return False
+
+    @staticmethod
+    def get_ext(filename:str):
+        return filename.split('.')[1]

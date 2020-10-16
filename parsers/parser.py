@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import argparse
+from helpers.file_helper import FileHelper
 
 class Parser(object):
 
@@ -51,10 +52,10 @@ class Parser(object):
             if self.parsed_args.action != "send" and self.parsed_args.new_line:
                 self.parser.error("Cannot enter new line using this action.")
 
-            if self.parsed_args.action == "replace" and self.parsed_args.file.split('.')[1] == 'csv':
+            if self.parsed_args.action == "replace" and FileHelper.get_ext(self.parsed_args.file) == 'csv':
                 if not self.parsed_args.replace_data or not self.parsed_args.data or not self.parsed_args.row or not self.parsed_args.column:
                     self.parser.error("Must specify row, column, data to replace with, and data being replaced in csv file.")
-            elif self.parsed_args.action == "replace" and self.parsed_args.file.split('.')[1] == 'txt':
+            elif self.parsed_args.action == "replace" and FileHelper.get_ext(self.parsed_args.file) == 'txt':
                 if not self.parsed_args.replace_data or not self.parsed_args.data:
                     self.parser.error("Must specify data to replace with and data being replaced in txt file.")
 

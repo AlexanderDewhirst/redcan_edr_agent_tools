@@ -35,7 +35,7 @@ class FileService(object):
         """
         # NOTE: potentially move 'try' block to this method
         data = {'message': self.args['data'], 'filename': self.filename}
-        file_ext = self.filename.split('.')[1]
+        file_ext = FileHelper.get_ext(self.filename)
         status = FileHelper.send_to_file(
             self.filename,
             self.args['data'],
@@ -51,7 +51,7 @@ class FileService(object):
             - dict
         """
         data = {'message': self.args['data'], 'replace_message': self.args['replace_data'], 'row': '', 'column': '', 'filename': self.filename}
-        file_ext = self.filename.split('.')[1]
+        file_ext = FileHelper.get_ext(self.filename)
         if file_ext == 'csv':
             status = FileHelper.replace_in_file(
                 self.filename,
