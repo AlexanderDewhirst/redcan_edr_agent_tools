@@ -118,7 +118,7 @@ The general format of the Logger message is the following:
 - logger specific details if necessary (absolute file path or host/port)
 
 ## Testing Operating Systems
-This application has been developed in a macOS environment and since Docker does not have the ability to containerize macOS or Windows OS, setting up a test environment within Docker for another operating system proves difficult. The Dockerfile in the application builds an image using the official Ubuntu version 18.04 image in Docker Hub and since both macOS and Linux are built on Unix, I believe this suffices. After installing Docker, you can run the following commands to get the Linux test environment running:
+This application has been developed locally in both macOS and Windows environments and since Docker does not have the ability to containerize macOS or Windows OS, setting up a test environment within Docker for another operating system proves difficult. To test Linux, the Dockerfile in the application builds an image using the official Ubuntu version 18.04 image in Docker Hub. If you test using a macOS host, since both macOS and Linux are built on Unix, I believe this suffices for Linux. After installing Docker, you can run the following commands to get the Linux test environment running:
 ```
 docker build --tag redcan_edr_agent_tools:1.0 .
 ```
