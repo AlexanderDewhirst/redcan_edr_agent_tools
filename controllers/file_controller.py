@@ -7,7 +7,7 @@ class FileController(object):
     def __init__(self, namespace_args):
         self.action     = namespace_args.action
         self.file       = namespace_args.file
-        self.args       = self._map_args(namespace_args)
+        self.args       = self.__map_args(namespace_args)
         self.status     = None
         self.data       = None
 
@@ -40,7 +40,7 @@ class FileController(object):
             )
         return response
 
-    def _map_args(self, namespace_args):
+    def __map_args(self, namespace_args):
         """
         This function maps Namespace to a dict.
         Input:

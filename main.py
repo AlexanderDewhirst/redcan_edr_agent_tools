@@ -8,6 +8,7 @@ from loggers.request_logger import RequestLogger
 # Parser
 parser = Parser()
 request = parser()
+print(request)
 # TODO: Check if connection to socket has already been established.
 
 # RequestLogger

@@ -200,3 +200,6 @@ Here is a list of potential changes to be made in the future:
 - Use `argparse` Python library in `listener.py`
 - Allow server in `listener.py` to accept multiple concurrent connections
 - Provide better error handling
+
+## Use Cases
+There are a number of use-cases for a CLI within an application. This feature can provide developers a way to interact with your organization's public or private APIs. This can allow you to grow a community and obtain quick and reliable feedback on your product suite. One example would be fintech APIs, one that allows you to send/receive money digitally.

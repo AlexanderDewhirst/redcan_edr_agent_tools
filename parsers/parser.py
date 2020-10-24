@@ -6,23 +6,30 @@ from helpers.file_helper import FileHelper
 class Parser(object):
 
     def __init__(self, description = None):
-        self.description = description
-        self.parser = self._init_parser()
+        self.__description = description
+        self.parser = self.__init_parser()
         self.status = True
+
+    def __repr__(self):
+        return "Parser {} has description: {}".format(self.parser, self.__description)
 
     def __call__(self):
         self.parsed_args = self.parser.parse_args()
         self.validate_args()
         return self
 
-    def _init_parser(self):
+    def __init_parser(self):
         """
         This function is called in the __init__ method and will create the parser
         and subparsers to store the command for us to access
         Output:
             - Namespace (argparse object)
         """
-        parser = argparse.ArgumentParser(description = "Process file create/send/replace/delete and network connect/send/close actions.")
+        if self.__description:
+            desc = self.__description
+        else:
+            desc = "Process file create/send/replace/delete and network connect/send/close actions."
+        parser = argparse.ArgumentParser(description = desc)
         subparsers = parser.add_subparsers(dest = 'command')
         file_parser = subparsers.add_parser('file_manager', help = "Process file actions.")
         file_parser.add_argument('-a', '--action', dest = 'action', type = str, action = 'store', help = 'Action.')
