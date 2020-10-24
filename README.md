@@ -188,6 +188,13 @@ python3 main.py network_manager -a send -l logfile.txt --host localhost --port 4
 python3 main.py network_manager -a close -l logfile.txt
 ```
 
+## Testing
+The test suite for this project uses the `unittest` Python library. The tests can be run with the following command:
+```
+python3 test.py
+```
+This test suite currently encompasses much of the file management features.
+
 ## Future Changes
 Here is a list of potential changes to be made in the future:
 - Look into `argparse.FileType` to handle the files created/edited/deleted and the logger files.

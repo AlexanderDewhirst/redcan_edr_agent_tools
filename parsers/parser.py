@@ -2,6 +2,7 @@
 
 import argparse
 from helpers.file_helper import FileHelper
+import sys
 
 class Parser(object):
 
@@ -11,7 +12,8 @@ class Parser(object):
         self.status = True
 
     def __repr__(self):
-        return "Parser {} has description: {}".format(self.parser, self.__description)
+        args = sys.argv[:]
+        return "Parser {} has description: {}".format(args, self.__description)
 
     def __call__(self):
         self.parsed_args = self.parser.parse_args()
